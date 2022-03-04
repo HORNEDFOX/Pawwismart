@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/pages/style.dart';
 
-class SignUp extends StatelessWidget {
-  const SignUp({Key? key}) : super(key: key);
+class LogIn extends StatelessWidget {
+  const LogIn({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class SignUp extends StatelessWidget {
               Column(
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height / 1.65,
+                    height: MediaQuery.of(context).size.height / 2.15,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -54,7 +54,7 @@ class SignUp extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Create Account",
+                          "Log In",
                           style: TextStyle(
                             fontSize: 34,
                             fontFamily: 'Nunito',
@@ -76,23 +76,15 @@ class SignUp extends StatelessWidget {
                         SizedBox(
                           height: 30,
                         ),
-                        TextFieldApp(text: "Full Name", obscure: false),
-                        SizedBox(
-                          height: 16,
-                        ),
                         TextFieldApp(text: "Email", obscure: false),
                         SizedBox(
                           height: 16,
                         ),
                         TextFieldApp(text: "Password", obscure: true),
                         SizedBox(
-                          height: 16,
-                        ),
-                        TextFieldApp(text: "Confirm Password", obscure: true),
-                        SizedBox(
                           height: 30,
                         ),
-                        ButtonBlue(text: "CREATE ACCOUNT NOW")
+                        ButtonBlue(text: "LOG IN")
                       ],
                     ),
                   ),

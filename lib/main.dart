@@ -2,23 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/pages/home.dart';
 import 'package:pawwismart/pages/signup.dart';
+import 'package:pawwismart/pages/login.dart';
+import 'package:pawwismart/bloc/authenticationRepository.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pawwismart/bloc/blocObserver.dart';
 
 Color buttonColor = const Color.fromRGBO(242, 244, 247, 0.7);
 Color buttonTextColor = const Color.fromRGBO(114, 117, 168, 1);
 
-void main() => runApp(BackgroundVideo());
-
-class BackgroundVideo extends StatefulWidget {
-  @override
-  _BackgroundVideoState createState() => _BackgroundVideoState();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  final authenticationRepository = AuthenticationRepository();
+  await authenticationRepository.user.first;
+  BlocOverrides.runZoned(
+        () => runApp(BackgroundVideo(authenticationRepository: authenticationRepository)),
+    blocObserver: AppBlocObserver(),
+  );
 }
 
-class _BackgroundVideoState extends State<BackgroundVideo> {
+class BackgroundVideo extends StatelessWidget {
+  const BackgroundVideo({Key? key, required AuthenticationRepository authenticationRepository}) : _authenticationRepository = authenticationRepository, super(key: key);
+
+  final AuthenticationRepository _authenticationRepository;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        // TODO 6: Create a Stack Widget
         body: Stack(
           children: <Widget>[
             Container(
@@ -36,6 +49,7 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
       routes: {
         '/home': (context) => Home(),
         '/signup': (context) => SignUp(),
+        '/login': (context) => LogIn(),
       },
     );
   }
@@ -137,7 +151,7 @@ class LoginWidget extends StatelessWidget {
                       height: 48,
                       child: TextButton(
                           onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/signup');
+                            Navigator.pushReplacementNamed(context, '/login');
                           },
                           child: Text('CREATE AN ACCOUNT',
                               style: TextStyle(

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        clip-path: url(#clip-path);
+      }
+
+      .cls-3 {
+        fill: #fdfdfd;
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient-2);
+      }
+    </style>
+    <clipPath id="clip-path">
+      <rect id="Прямоугольник_3" data-name="Прямоугольник 3" class="cls-1" width="375" height="812"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="-0.268" y1="0.888" x2="0.911" y2="-0.148" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#8bc6ec"/>
+      <stop offset="1" stop-color="#9599e2"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.5" y1="0" x2="0.5" y2="1" xlink:href="#linear-gradient"/>
+  </defs>
+  <g id="background" class="cls-2">
+    <rect id="Прямоугольник_1" data-name="Прямоугольник 1" class="cls-3" width="375" height="812"/>
+    <path id="Контур_1" data-name="Контур 1" class="cls-4" d="M113.965,374.228C-7.5,386.864-14.4,250.141-27.039,128.681s75.585-230.167,197.045-242.8,230.167,75.585,242.8,197.046S235.425,361.593,113.965,374.228Z"/>
+    <path id="Контур_2" data-name="Контур 2" class="cls-5" d="M315.09,851.437c-62.554,20.875-160.654-25.151-181.529-87.705S256.8,590.857,319.348,569.982s106.252,26.954,119.2,92.911C446.56,726.5,377.644,830.562,315.09,851.437Z"/>
+  </g>
+</svg>

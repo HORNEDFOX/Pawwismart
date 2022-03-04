@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "291116961460",
+    "project_id": "pawwismartdev",
+    "storage_bucket": "pawwismartdev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291116961460:android:68b4d488d8b1d1a91711e1",
+        "android_client_info": {
+          "package_name": "com.pawwismart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "291116961460-8tshgqkqvv85eo0f4qvh41gobp2gfubq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpv4jH5DitwTi21ueScWQxnd6Ov6pCwjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "291116961460-8tshgqkqvv85eo0f4qvh41gobp2gfubq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../bloc/bloc/auth_bloc.dart';
 
 class FlexiableAppBar extends StatelessWidget {
 
   final double appBarHeight = 30.0;
-
-  const FlexiableAppBar();
+  final user = FirebaseAuth?.instance.currentUser!;
+  FlexiableAppBar();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +39,7 @@ class FlexiableAppBar extends StatelessWidget {
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  child: Text('Amanda',
+                  child: Text('${user.displayName}',
                       style: TextStyle(
                         color: Color.fromRGBO(151, 196, 232, 1),
                         fontSize: 30,
@@ -44,16 +48,40 @@ class FlexiableAppBar extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(130,0,3,0),
-                  child: SvgPicture.asset(
-                      "assets/images/bellPinFill.svg"
-                  ),
+                  padding: const EdgeInsets.fromLTRB(70,0,3,0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Material(
+                        color: Color.fromRGBO(255, 255, 255, 1),
+                        child: InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: SvgPicture.asset(
+                                "assets/images/bellPinFill.svg"),
+                          ),
+                          onTap: () {},
+                        ),
+                      ),
+                    )
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(0,0,3,0),
-                  child: SvgPicture.asset(
-                      "assets/images/menu.svg"
-                  ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Material(
+                        color: Color.fromRGBO(255, 255, 255, 1),
+                        child: InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: SvgPicture.asset(
+                                "assets/images/menu.svg"),
+                          ),
+                          onTap: () {
+                            context.read<AuthBloc>().add(SignOutRequested());
+                          },
+                        ),
+                      ),
+                    )
                 ),
               ],
             ),

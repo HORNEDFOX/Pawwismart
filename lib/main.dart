@@ -1,56 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:pawwismart/bloc/bloc/auth_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/pages/home.dart';
-import 'package:pawwismart/pages/signup.dart';
-import 'package:pawwismart/pages/login.dart';
-import 'package:pawwismart/bloc/authenticationRepository.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/widgets.dart';
+import 'package:pawwismart/data/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pawwismart/bloc/blocObserver.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pawwismart/pages/login.dart';
+import 'package:pawwismart/pages/pawwiSmartStart.dart';
+import 'package:pawwismart/pages/signup.dart';
 
-Color buttonColor = const Color.fromRGBO(242, 244, 247, 0.7);
-Color buttonTextColor = const Color.fromRGBO(114, 117, 168, 1);
+import 'bloc/navigation/nav_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final authenticationRepository = AuthenticationRepository();
-  await authenticationRepository.user.first;
-  BlocOverrides.runZoned(
-        () => runApp(BackgroundVideo(authenticationRepository: authenticationRepository)),
-    blocObserver: AppBlocObserver(),
-  );
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RepositoryProvider(
+      create: (context) => AuthRepository(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AuthBloc(
+              authRepository: RepositoryProvider.of<AuthRepository>(context),
+            ),
+          ),
+        ],
+        child: MaterialApp(
+          home: StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Home();
+                }
+                return BackgroundVideo();
+              }),
+        ),
+      ),
+    );
+  }
 }
 
 class BackgroundVideo extends StatelessWidget {
-  const BackgroundVideo({Key? key, required AuthenticationRepository authenticationRepository}) : _authenticationRepository = authenticationRepository, super(key: key);
-
-  final AuthenticationRepository _authenticationRepository;
+  const BackgroundVideo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/dog.gif"),
-                  fit: BoxFit.fitHeight,
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        body: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is Loading) {
+              // Showing the loading indicator while the user is signing in
+              return const Center(
+                child: SafeArea(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Color.fromRGBO(114, 117, 168, 1)),
+                  ),
                 ),
-              ),
-            ),
-            LoginWidget(),
-          ],
+              );
+            }
+            return Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/dog.gif"),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => ButtonBloc(NoPressAuthButton()),
+                  child: LoginWidget(),
+                ),
+              ],
+            );
+          },
         ),
       ),
-      routes: {
-        '/home': (context) => Home(),
-        '/signup': (context) => SignUp(),
-        '/login': (context) => LogIn(),
-      },
     );
   }
 }
@@ -59,137 +97,41 @@ class LoginWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(159, 161, 212, 0.65),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: screenSize.height * 0.15),
-              child: SvgPicture.asset("assets/images/Pawwi.svg"),
-            ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(bottom: screenSize.height * 0.05),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(
-                          top: 16, bottom: 0, left: 0, right: 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                              icon: SvgPicture.asset(
-                                  "assets/images/facebook.svg"),
-                              iconSize: 56,
-                              onPressed: () {}),
-                          IconButton(
-                              icon:
-                                  SvgPicture.asset("assets/images/twitter.svg"),
-                              iconSize: 56,
-                              onPressed: () {}),
-                          IconButton(
-                              icon:
-                                  SvgPicture.asset("assets/images/google.svg"),
-                              iconSize: 56,
-                              onPressed: () {}),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                          text: 'Or Connect With',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Open Sans',
-                            fontWeight: FontWeight.w400,
-                          )),
-                    ),
-                    SizedBox(height: 24),
-                    SizedBox(
-                      width: 296,
-                      height: 48,
-                      child: TextButton(
-                          onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        },
-                        style: TextButton.styleFrom(
-                            backgroundColor: buttonColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100))),
-                        child: Column(
-                          // Replace with a Row for horizontal icon + text
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text("LOG IN",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Open Sans',
-                                  fontWeight: FontWeight.bold,
-                                  color: buttonTextColor,
-                                )),
-                            Text("With an Existing Account",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: 'Open Sans',
-                                  fontWeight: FontWeight.w300,
-                                  color: buttonTextColor,
-                                )),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    SizedBox(
-                      width: 296,
-                      height: 48,
-                      child: TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/login');
-                          },
-                          child: Text('CREATE AN ACCOUNT',
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.bold,
-                                color: buttonTextColor,
-                              )),
-                          style: TextButton.styleFrom(
-                            backgroundColor: buttonColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100)),
-                          )),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                                text: 'Forgot password?',
-                                style: new TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'Open Sans',
-                                  fontWeight: FontWeight.w400,
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Color.fromRGBO(159, 161, 212, 0.65),
+        body: SingleChildScrollView(
+          child: Container(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: screenSize.height * 0.15),
+                    child: SvgPicture.asset("assets/images/Pawwi.svg"),
+                  ),
+                  BlocBuilder<ButtonBloc, ButtonState>(
+                    builder: (context, state) {
+                      if (state is NoPressAuthButton) {
+                        return PSmartStart();
+                      }
+                      if (state is PressLogInButton) {
+                        return LogIn();
+                      }
+                      if (state is PressSignUpButton) {
+                        return SignUp();
+                      }
+                      return Container();
+                    },
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

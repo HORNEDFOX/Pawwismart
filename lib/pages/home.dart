@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/pages/flexiableappbar.dart';
+
+import '../data/repositories/pet_repository.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,36 +13,6 @@ class Home extends StatefulWidget {
 }
 
 class _MyHomeState extends State<Home> {
-  List Name = [
-    "Togo",
-    "Olive",
-    "Charlie",
-    "Espresso",
-    "Togo",
-    "Olive",
-    "Charlie",
-    "Espresso"
-  ];
-  List DeviceID = [
-    "Device ID875905",
-    "Device ID875869",
-    "Device ID805869",
-    "Device ID805869",
-    "Device ID875905",
-    "Device ID875869",
-    "Device ID805869",
-    "Device ID805869"
-  ];
-  List ImagePet = [
-    "assets/images/avatarDog.jpg",
-    "assets/images/avatarDog1.jpg",
-    "assets/images/avatarDog2.jpg",
-    "assets/images/avatarCat.jpg",
-    "assets/images/avatarDog.jpg",
-    "assets/images/avatarDog1.jpg",
-    "assets/images/avatarDog2.jpg",
-    "assets/images/avatarCat.jpg"
-  ];
   var top = 0.0;
 
   late ScrollController _scrollController;
@@ -132,7 +106,7 @@ class _MyHomeState extends State<Home> {
                   Padding(
                       padding: EdgeInsets.only(left: 10.0, right: 10.0),
                       child: Container(
-                        width: 30,
+                        //width: 30,
                         height: 25,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(
@@ -145,7 +119,7 @@ class _MyHomeState extends State<Home> {
                         ),
                         child: Row(
                           children: <Widget>[
-                            Text("89",
+                            Text('text',
                                 style: TextStyle(
                                   color: isShrink
                                       ? Color.fromRGBO(243, 246, 251, 1)
@@ -161,12 +135,34 @@ class _MyHomeState extends State<Home> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return PetCard(Name[index], DeviceID[index], ImagePet[index]);
-              },
-              childCount: Name.length,
+          RepositoryProvider(
+            create: (context) => PetRepository(),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => PetBloc(
+                    petRepository:
+                        RepositoryProvider.of<PetRepository>(context),
+                  ),
+                ),
+              ],
+              child: BlocBuilder<PetBloc, PetState>(builder: (context, state) {
+                if (state is PetLoading) {
+                  return PetCard('Cat', 'Cat', 'Cat');
+                }
+                if (state is PetLoaded) {
+                  return FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Container(
+                      child: PetCard(
+                          state.pets.elementAt(1).name,
+                          state.pets.elementAt(1).name,
+                          state.pets.elementAt(1).name),
+                    ),
+                  );
+                }
+                return Container(child: Text('hvfjv'));
+              }),
             ),
           ),
         ],
@@ -227,34 +223,33 @@ class PetCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                            Container(
-                              child: Text(Name,
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(74, 85, 104, 1),
-                                    fontSize: 23,
-                                    fontFamily: 'Open Sans',
-                                    fontWeight: FontWeight.w900,
-                                  )),
-                            ),
-                            Container(
-                                child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Material(
-                                color: Color.fromRGBO(255, 255, 255, 1),
-                                child: InkWell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2),
-                                    child: SvgPicture.asset(
-                                        "assets/images/filterBig.svg"),
-                                  ),
-                                  onTap: () {},
-                                ),
-                              ),
-                            )
-                            ),
-                          ],
+                        Container(
+                          child: Text(Name,
+                              style: TextStyle(
+                                color: Color.fromRGBO(74, 85, 104, 1),
+                                fontSize: 23,
+                                fontFamily: 'Open Sans',
+                                fontWeight: FontWeight.w900,
+                              )),
                         ),
+                        Container(
+                            child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Material(
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            child: InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: SvgPicture.asset(
+                                    "assets/images/filterBig.svg"),
+                              ),
+                              onTap: () {},
+                            ),
+                          ),
+                        )),
+                      ],
                     ),
+                  ),
                   Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 3, horizontal: 0),

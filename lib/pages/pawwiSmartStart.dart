@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../bloc/bloc/auth_bloc.dart';
 import '../bloc/navigation/nav_bloc.dart';
+import '../bloc/petBloc/pet_bloc.dart';
 
 Color buttonColor = const Color.fromRGBO(242, 244, 247, 0.7);
 Color buttonTextColor = const Color.fromRGBO(114, 117, 168, 1);

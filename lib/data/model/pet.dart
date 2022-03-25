@@ -1,18 +1,28 @@
-class Pet{
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+
+class Pet extends Equatable{
   final int id;
   final String name;
-  final String IDDivace;
+  final String image;
+  final String IDUser;
+  final bool isDelete;
 
-  Pet(this.id, this.name, this.IDDivace);
+  const Pet({
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.IDUser,
+    required this.isDelete,
+  });
 
-  Pet.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        IDDivace = json['IDDivace'];
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id, name, image, IDUser, isDelete];
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'IDDivace': IDDivace,
-  };
+  static Pet fromSnapshot(DocumentSnapshot snap)
+  {
+    Pet pet = Pet(id: snap['id'], name: snap['Name'], image: snap['Image'], IDUser: snap['IDUser'], isDelete: snap['IsDelete']);
+    return pet;
+  }
 }

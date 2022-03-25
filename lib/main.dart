@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pawwismart/bloc/bloc/auth_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
+import 'package:pawwismart/data/repositories/pet_repository.dart';
 import 'package:pawwismart/pages/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:pawwismart/data/repositories/auth_repository.dart';

@@ -18,17 +18,34 @@ class PetBloc extends Bloc<PetEvent, PetState> {
         super(PetLoading()) {
     on<LoadPet>(_onLoadPets);
     on<UpdatePet>(_onUpdatePets);
+    on<DeletePet>(_onDeletePet);
+    on<AddPet>(_onAddPet);
+    on<CreatingPet>(_onCreatingPet);
   }
 
-  void _onLoadPets(event, Emitter<PetState> emit) {
+  void _onLoadPets(LoadPet event, Emitter<PetState> emit) {
     _petSubscription?.cancel();
     _petSubscription = _petRepository.getAllPet().listen(
-          (pets) => add(UpdatePet(pets),
+          (pet) => add(UpdatePet(pet),
     ),
     );
   }
 
-  void _onUpdatePets(event, Emitter<PetState> emit) {
+  void _onUpdatePets(UpdatePet event, Emitter<PetState> emit) {
     emit(PetLoaded(pets: event.pets));
+  }
+
+  void _onDeletePet(DeletePet event, Emitter<PetState> emit)  {
+    _petSubscription?.cancel();
+    _petSubscription = _petRepository.deletePet(event.pet) as StreamSubscription?;
+    LoadPet();
+  }
+
+  void _onAddPet(AddPet event, Emitter<PetState> emit)  {
+    _petRepository.createPet(event.pet);
+  }
+
+  void _onCreatingPet(CreatingPet event, Emitter<PetState> emit) {
+    emit(PetCreating());
   }
 }

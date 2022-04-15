@@ -17,7 +17,7 @@ class FlexiableAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    return new Container(
+    return Container(
       padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
       color: Color.fromRGBO(253, 253, 253, 1),
       child: Column(

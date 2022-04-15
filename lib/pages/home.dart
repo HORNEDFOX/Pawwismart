@@ -1,10 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/pages/flexiableappbar.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:pawwismart/pages/scanQRCode.dart';
 
+import '../bloc/device/device_bloc.dart';
+import '../data/model/pet.dart';
+import '../data/repositories/device_repository.dart';
 import '../data/repositories/pet_repository.dart';
 
 class Home extends StatefulWidget {
@@ -47,139 +52,190 @@ class _MyHomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    return RepositoryProvider(
+      create: (context) => PetRepository(),
+      child: BlocProvider(
+        create: (context) => PetBloc(
+          petRepository: PetRepository(),
+        )..add(LoadPet()),
+        child: Builder(
+        builder: (context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(253, 253, 253, 1),
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: <Widget>[
-          SliverAppBar(
-            // <-- app bar for logo
-            toolbarHeight: 0,
-            floating: false,
-            pinned: true,
-            elevation: 0.0,
-            backgroundColor: Color.fromRGBO(74, 85, 104, 1),
-          ),
-          SliverAppBar(
-              // <-- app bar for logo
-              toolbarHeight: 110,
-              floating: false,
-              pinned: false,
-              elevation: 0.0,
-              backgroundColor: isShrink
-                  ? Color.fromRGBO(74, 85, 104, 1)
-                  : Color.fromRGBO(253, 253, 253, 1),
-              flexibleSpace: FlexibleSpaceBar(
-                background: FlexiableAppBar(),
-              )),
-          SliverAppBar(
-            // <-- app bar for custom sticky menu
-            primary: true,
-            toolbarHeight: 15,
-            floating: false,
-            pinned: true,
-            elevation: 0.0,
-            //floating: false,
-            backgroundColor: isShrink
-                ? Color.fromRGBO(74, 85, 104, 1)
-                : Color.fromRGBO(253, 253, 253, 1),
-            flexibleSpace: Container(
-              padding: isShrink
-                  ? const EdgeInsets.fromLTRB(15, 0, 0, 12)
-                  : const EdgeInsets.fromLTRB(15, 0, 0, 8),
-              alignment: Alignment.bottomLeft,
-              decoration: BoxDecoration(
-                  color: isShrink
-                      ? Color.fromRGBO(74, 85, 104, 1)
-                      : Color.fromRGBO(253, 253, 253, 1)),
-              child: Row(
-                children: [
-                  Text('My Pets',
-                      style: TextStyle(
-                        color: isShrink
-                            ? Color.fromRGBO(253, 253, 253, 1)
-                            : Color.fromRGBO(74, 85, 104, 1),
-                        fontSize: isShrink ? 24 : 30,
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w900,
-                      )),
-                  Padding(
-                      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: Container(
-                        //width: 30,
-                        height: 25,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: isShrink
-                              ? Color.fromRGBO(86, 98, 120, 1)
-                              : Color.fromRGBO(243, 246, 251, 1),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Text('text',
-                                style: TextStyle(
-                                  color: isShrink
-                                      ? Color.fromRGBO(243, 246, 251, 1)
-                                      : Color.fromRGBO(148, 161, 187, 1),
-                                  fontSize: 14,
-                                  fontFamily: 'Open Sans',
-                                  fontWeight: FontWeight.w400,
-                                )),
-                          ],
-                        ),
-                      ))
-                ],
+      body:  CustomScrollView(
+            controller: _scrollController,
+            slivers: <Widget>[
+              SliverAppBar(
+                // <-- app bar for logo
+                toolbarHeight: 0,
+                floating: false,
+                pinned: true,
+                elevation: 0.0,
+                backgroundColor: Color.fromRGBO(74, 85, 104, 1),
               ),
-            ),
-          ),
-          RepositoryProvider(
-            create: (context) => PetRepository(),
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => PetBloc(
-                    petRepository:
-                        RepositoryProvider.of<PetRepository>(context),
+              SliverAppBar(
+                  // <-- app bar for logo
+                  toolbarHeight: MediaQuery.of(context).size.height / 7.6,
+                  floating: false,
+                  pinned: false,
+                  elevation: 0.0,
+                  backgroundColor: isShrink
+                      ? Color.fromRGBO(74, 85, 104, 1)
+                      : Color.fromRGBO(253, 253, 253, 1),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: FlexiableAppBar(),
+                  )),
+              SliverAppBar(
+                // <-- app bar for custom sticky menu
+                primary: true,
+                toolbarHeight: MediaQuery.of(context).size.height / 50,
+                floating: false,
+                pinned: true,
+                elevation: 0.0,
+                //floating: false,
+                backgroundColor: isShrink
+                    ? Color.fromRGBO(74, 85, 104, 1)
+                    : Color.fromRGBO(253, 253, 253, 1),
+                flexibleSpace: Container(
+                  padding: isShrink
+                      ? const EdgeInsets.fromLTRB(15, 0, 0, 12)
+                      : const EdgeInsets.fromLTRB(15, 0, 0, 8),
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                      color: isShrink
+                          ? Color.fromRGBO(74, 85, 104, 1)
+                          : Color.fromRGBO(253, 253, 253, 1)),
+                  child: Row(
+                    children: [
+                      Text('My Pets',
+                          style: TextStyle(
+                            color: isShrink
+                                ? Color.fromRGBO(253, 253, 253, 1)
+                                : Color.fromRGBO(74, 85, 104, 1),
+                            fontSize: isShrink ? 24 : 30,
+                            fontFamily: 'Nunito',
+                            fontWeight: FontWeight.w900,
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Container(
+                            //width: 30,
+                            height: 25,
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: isShrink
+                                  ? Color.fromRGBO(86, 98, 120, 1)
+                                  : Color.fromRGBO(243, 246, 251, 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                BlocBuilder<PetBloc, PetState>(
+                                    builder: (context, state) {
+                                  if (state is PetLoaded) {
+                                    return Text('${state.pets.length}',
+                                        style: TextStyle(
+                                          color: isShrink
+                                              ? Color.fromRGBO(243, 246, 251, 1)
+                                              : Color.fromRGBO(
+                                                  148, 161, 187, 1),
+                                          fontSize: 14,
+                                          fontFamily: 'Open Sans',
+                                          fontWeight: FontWeight.w400,
+                                        ));
+                                  }
+                                  return Text('0',
+                                      style: TextStyle(
+                                        color: isShrink
+                                            ? Color.fromRGBO(243, 246, 251, 1)
+                                            : Color.fromRGBO(148, 161, 187, 1),
+                                        fontSize: 14,
+                                        fontFamily: 'Open Sans',
+                                        fontWeight: FontWeight.w400,
+                                      ));
+                                }),
+                              ],
+                            ),
+                          ))
+                    ],
                   ),
                 ),
-              ],
-              child: BlocBuilder<PetBloc, PetState>(builder: (context, state) {
-                if (state is PetLoading) {
-                  return PetCard('Cat', 'Cat', 'Cat');
-                }
+              ),
+              BlocBuilder<PetBloc, PetState>(builder: (context, state) {
                 if (state is PetLoaded) {
-                  return FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Container(
-                      child: PetCard(
-                          state.pets.elementAt(1).name,
-                          state.pets.elementAt(1).name,
-                          state.pets.elementAt(1).name),
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (buildContext, index) {
+                        //return PetCard(pet: state.pets.elementAt(index));
+                        return PetCard(pet: state.pets.elementAt(index));
+                      },
+                      childCount: state.pets.length,
                     ),
                   );
                 }
-                return Container(child: Text('hvfjv'));
+                if (state is PetLoading) {
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                if (state is PetCreating) {
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                    Center(
+                        child: ScanScreen(),
+                    )
+                      ],
+                    ),
+                  );
+                }
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Container(child: Text('No data')),
+                    ],
+                  ),
+                );
               }),
-            ),
+            ],
           ),
-        ],
-      ),
+          floatingActionButton: FloatingActionButton(
+              onPressed: () {_pressCreatePet(context);},
+              tooltip: 'Scan Barcode',
+              elevation: 0,
+              backgroundColor: Color.fromRGBO(151, 196, 232, 1),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(100.0))),
+              child: SvgPicture.asset(
+                    "assets/images/petAdd.svg"),
+              ),
+        );
+      },
+        ),
+    ),
+    );
+  }
+
+  void _pressCreatePet(context) {
+    BlocProvider.of<PetBloc>(context).add(CreatingPet(),
     );
   }
 }
 
 class PetCard extends StatelessWidget {
-  late String Name;
-  late String DeviceID;
-  late String ImagePet;
+  late Pet pet;
 
-  PetCard(String Name, String DeviceID, String ImagePet) {
-    this.Name = Name;
-    this.DeviceID = DeviceID;
-    this.ImagePet = ImagePet;
+  PetCard({required Pet pet}) {
+    this.pet = pet;
   }
 
   @override
@@ -204,7 +260,7 @@ class PetCard extends StatelessWidget {
                   Center(
                     child: CircleAvatar(
                       radius: 45.0,
-                      backgroundImage: AssetImage(ImagePet),
+                      backgroundImage: NetworkImage(pet.image.toString()),
                       backgroundColor: Colors.transparent,
                     ),
                   ),
@@ -224,7 +280,7 @@ class PetCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Container(
-                          child: Text(Name,
+                          child: Text(pet.name,
                               style: TextStyle(
                                 color: Color.fromRGBO(74, 85, 104, 1),
                                 fontSize: 23,
@@ -243,7 +299,9 @@ class PetCard extends StatelessWidget {
                                 child: SvgPicture.asset(
                                     "assets/images/filterBig.svg"),
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                _deletePet(context, pet);
+                              },
                             ),
                           ),
                         )),
@@ -281,7 +339,7 @@ class PetCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              child: Text(DeviceID,
+                              child: Text("Device ID${pet.IDDevice}",
                                   style: TextStyle(
                                     color: Color.fromRGBO(148, 161, 187, 1),
                                     fontSize: 14,
@@ -331,4 +389,10 @@ class PetCard extends StatelessWidget {
       ),
     ); // <== The Card class constructor
   }
+}
+
+void _deletePet(context, Pet pet) {
+  BlocProvider.of<PetBloc>(context).add(
+    DeletePet(pet),
+  );
 }

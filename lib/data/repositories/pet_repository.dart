@@ -12,14 +12,9 @@ class PetRepository extends BasePetRepository {
 
   @override
   Stream<List<Pet>> getAllPet() {
-    return _firebaseFirestore.collection("Pet").snapshots().map((snap) {
+    return _firebaseFirestore.collection("Pet").where("IDUser", isEqualTo: FirebaseAuth.instance.currentUser!.uid).where("IsDelete", isEqualTo: false).snapshots().map((snap) {
       return snap.docs.map((doc) => Pet.fromSnapshot(doc)).toList();
     });
-  }
-
-  @override
-  Future<void> deletePet(Pet pet) async {
-    return _firebaseFirestore.collection("Pet").doc('${pet.id}').delete();
   }
 
   @override
@@ -40,11 +35,17 @@ class PetRepository extends BasePetRepository {
 
   @override
   Future<void> updatePetPictures(Pet pet, String imageName) async {
-    String downloadUrl =
-        await StorageRepository().getDownloadURL(pet, imageName);
+    String downloadUrl = await StorageRepository().getDownloadURL(pet, imageName);
 
     return _firebaseFirestore.collection('Pet').doc(pet.id).update({
-      'Image': FieldValue.arrayUnion([downloadUrl])
+      "IsDelete": true
+    });
+  }
+
+  @override
+  Future<void> deletePet(Pet pet) async {
+    return _firebaseFirestore.collection('Pet').doc(pet.id).update({
+      "IsDelete": true
     });
   }
 }

@@ -36,9 +36,7 @@ class PetBloc extends Bloc<PetEvent, PetState> {
   }
 
   void _onDeletePet(DeletePet event, Emitter<PetState> emit)  {
-    _petSubscription?.cancel();
-    _petSubscription = _petRepository.deletePet(event.pet) as StreamSubscription?;
-    LoadPet();
+    _petRepository.deletePet(event.pet);
   }
 
   void _onAddPet(AddPet event, Emitter<PetState> emit)  {

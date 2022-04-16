@@ -19,9 +19,9 @@ class DeviceRepository {
     });
   }
 
-  Future<void> updateIDDevice(Device device) async {
-    return _firebaseFirestore.collection('Device').doc(device.id).update({
-      'IsBusy': FieldValue.arrayUnion([true])
+  Future<void> updateIDDevice(String device, bool state) async {
+    return _firebaseFirestore.collection('Device').doc(device).update({
+      'IsBusy': state
     });
   }
 }

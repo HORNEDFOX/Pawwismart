@@ -39,8 +39,8 @@ class Pet extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'image': image,
+      'Name': name,
+      'Image': image,
       'IDUser': IDUser,
       'IDDevice': IDDevice,
       'IsDelete': isDelete,

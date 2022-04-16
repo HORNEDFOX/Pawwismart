@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/pages/flexiableappbar.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:pawwismart/pages/scanQRCode.dart';
+import 'package:pawwismart/pages/createPet.dart';
 
 import '../bloc/device/device_bloc.dart';
 import '../data/model/pet.dart';
@@ -392,7 +392,6 @@ class PetCard extends StatelessWidget {
 }
 
 void _deletePet(context, Pet pet) {
-  BlocProvider.of<PetBloc>(context).add(
-    DeletePet(pet),
-  );
+  //BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(pet.IDDevice, false));
+  BlocProvider.of<PetBloc>(context).add(DeletePet(pet));
 }

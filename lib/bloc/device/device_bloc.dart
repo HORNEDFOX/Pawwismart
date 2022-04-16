@@ -35,6 +35,6 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   }
 
   void _onUpdateIDDevice(UpdateIDDevice event, Emitter<DeviceState> emit) {
-    _deviceRepository.updateIDDevice(event.device);
+    _deviceRepository.updateIDDevice(event.device, event.state);
   }
 }

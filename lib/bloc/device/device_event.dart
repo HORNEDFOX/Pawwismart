@@ -23,9 +23,10 @@ class UpdateDevice extends DeviceEvent{
 }
 
 class UpdateIDDevice extends DeviceEvent{
-  final Device device;
+  final String device;
+  final bool state;
 
-  UpdateIDDevice(this.device);
+  UpdateIDDevice(this.device, this.state);
 
   @override
   List<Object> get props => [device];

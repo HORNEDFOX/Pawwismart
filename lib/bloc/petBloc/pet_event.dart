@@ -20,18 +20,6 @@ class UpdatePet extends PetEvent{
   List<Object> get props => [pets];
 }
 
-class DeletePet extends PetEvent {
-  final Pet pet;
-
-  const DeletePet(this.pet);
-
-  @override
-  List<Object> get props => [pet];
-
-  @override
-  String toString() => 'Delete Pet { record: $pet }';
-}
-
 class AddPet extends PetEvent {
   final Pet pet;
 
@@ -42,4 +30,13 @@ class AddPet extends PetEvent {
 
   @override
   String toString() => 'Add Pet { record: $pet }';
+}
+
+class DeletePet extends PetEvent{
+  final Pet pet;
+
+  DeletePet(this.pet);
+
+  @override
+  List<Object> get props => [pet];
 }

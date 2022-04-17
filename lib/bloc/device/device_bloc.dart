@@ -28,7 +28,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       _deviceSubscription = _deviceRepository.getDevice(event.QRCode).listen(
               (device) => add(UpdateDevice(device)));
     } catch (e) {
-      emit(DeviceLoading());
+      emit(DeviceNoLoading());
     }
   }
 

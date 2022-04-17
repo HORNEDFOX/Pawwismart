@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pawwismart/pages/petImage.dart';
 
 import '../bloc/device/device_bloc.dart';
 import '../bloc/petBloc/pet_bloc.dart';
@@ -19,7 +20,7 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  String Image = "https://firebasestorage.googleapis.com/v0/b/pawwismartdev.appspot.com/o/AvatarDog2.jpg?alt=media&token=3a8d7bdb-fc1a-4c31-aae1-b6f77709a904";
+  String Image = "";
 
   @override
   void dispose() {
@@ -193,10 +194,13 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                           height: 25,
                         ),
                         Center(
-                          child: CircleAvatar(
-                            radius: 80.0,
-                            backgroundImage: NetworkImage(Image),
-                            backgroundColor: Colors.transparent,
+                          child: PetImage(
+                            onFileChanged: (imageUrl)
+                                {
+                                  setState(() {
+                                    this.Image = imageUrl;
+                                  });
+                                },
                           ),
                         ),
                         SizedBox(

@@ -14,7 +14,7 @@ class LoadDevice extends DeviceEvent{
 }
 
 class UpdateDevice extends DeviceEvent{
-  final List<Device> device;
+  final Device device;
 
   UpdateDevice(this.device);
 

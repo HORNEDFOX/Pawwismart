@@ -8,15 +8,12 @@ class DeviceRepository {
   DeviceRepository({FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
-  Stream<List<Device>> getDevice(String QRCode) {
+  Stream<Device> getDevice(String QRCode) {
     return _firebaseFirestore
-        .collection("Device")
-        .where("IDDevice", isEqualTo: QRCode)
-        .where("IsBusy", isEqualTo: false)
+        .collection('Device')
+        .doc(QRCode)
         .snapshots()
-        .map((snap) {
-            return snap.docs.map((doc) => Device.fromSnapshot(doc)).toList();
-    });
+        .map((snap) => Device.fromSnapshot(snap));
   }
 
   Future<void> updateIDDevice(String device, bool state) async {

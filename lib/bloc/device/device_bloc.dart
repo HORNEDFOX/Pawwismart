@@ -23,14 +23,19 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   }
 
   void _onLoadDevice(LoadDevice event, Emitter<DeviceState> emit) {
-    _deviceSubscription?.cancel();
-    _deviceSubscription = _deviceRepository.getDevice(event.QRCode).listen(
-        (device) => add(UpdateDevice(device)));
+    try {
+      _deviceSubscription?.cancel();
+      _deviceSubscription = _deviceRepository.getDevice(event.QRCode).listen(
+              (device) => add(UpdateDevice(device)));
+    } catch (e) {
+      emit(DeviceLoading());
+    }
   }
 
   void _onUpdateDevice(UpdateDevice event, Emitter<DeviceState> emit) {
-    if(event.device.isNotEmpty)
+    if(event.device.isBusy != true){
     emit(DeviceLoaded(device: event.device));
+    }
     else emit(DeviceNoLoading());
   }
 

@@ -6,9 +6,10 @@ import '../bloc/device/device_bloc.dart';
 import '../bloc/petBloc/pet_bloc.dart';
 import '../data/model/device.dart';
 import '../data/model/pet.dart';
-import '../data/repositories/device_repository.dart';
 import 'package:pawwismart/pages/inputValidationMixin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../data/repositories/device_repository.dart';
 
 class ScanScreen extends StatefulWidget {
   @override
@@ -31,12 +32,12 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => DeviceRepository(),
-      child: BlocProvider(
+        create: (context) => DeviceRepository(),
+        child: BlocProvider(
         create: (context) => DeviceBloc(
-          deviceRepository: DeviceRepository(),
-        ),
-        child: Builder(
+      deviceRepository: DeviceRepository(),
+    ),
+    child: Builder(
           builder: (context) {
             return BlocBuilder<DeviceBloc, DeviceState>(
                 builder: (context, state) {
@@ -72,8 +73,8 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                         height: 50,
                         width: MediaQuery.of(context).size.width / 1.5,
                         child: FlatButton(
-                          onPressed: () async {
-                            await scanQR(context);
+                          onPressed: () {
+                            scanQR(context);
                           },
                           padding: EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
@@ -193,7 +194,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                         ),
                         Center(
                           child: CircleAvatar(
-                            radius: 70.0,
+                            radius: 80.0,
                             backgroundImage: NetworkImage(Image),
                             backgroundColor: Colors.transparent,
                           ),
@@ -206,7 +207,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                           child: TextFormField(
                             keyboardType: TextInputType.text,
                             controller: _nameController,
-                            obscureText: true,
+                            obscureText: false,
                             validator: (name) {
                               if (isNameValid(name!))
                                 return null;
@@ -259,7 +260,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                           width: MediaQuery.of(context).size.width / 1.5,
                           child: FlatButton(
                             onPressed: () {
-                              _createPet(context, state.device.first);
+                              _createPet(context, state.device);
                             },
                             padding: EdgeInsets.all(0),
                             shape: RoundedRectangleBorder(
@@ -354,7 +355,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Device not found",
+                      Text("Device Not Found",
                           style: TextStyle(
                             color: Color.fromRGBO(74, 85, 104, 1),
                             fontSize: 30,
@@ -472,8 +473,8 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
               return Container();
             });
           },
+    ),
         ),
-      ),
     );
   }
 
@@ -507,7 +508,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
 
   void _createPet(BuildContext context, Device device) {
     if (_formKey.currentState!.validate()) {
-      Pet pet = Pet(id: _nameController.text+FirebaseAuth.instance.currentUser!.uid, name: _nameController.text, image: Image, IDUser: FirebaseAuth.instance.currentUser!.uid, IDDevice: QRCode, isDelete: false);
+      Pet pet = Pet(id: _nameController.text+FirebaseAuth.instance.currentUser!.uid, name: _nameController.text, image: Image.toString(), IDUser: FirebaseAuth.instance.currentUser!.uid, IDDevice: QRCode, isDelete: false);
       BlocProvider.of<PetBloc>(context).add(AddPet(pet));
       BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(device.IDDevice, true));
     }

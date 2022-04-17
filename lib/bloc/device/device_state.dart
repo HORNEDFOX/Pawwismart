@@ -9,15 +9,12 @@ abstract class DeviceState extends Equatable{
 
 class DeviceLoading extends DeviceState{}
 
-class DeviceNoLoading extends DeviceState{
-  @override
-  List<Object> get props => [1];
-}
+class DeviceNoLoading extends DeviceState{}
 
 class DeviceLoaded extends DeviceState{
-  final List<Device> device;
+  final Device device;
 
-  const DeviceLoaded({this.device = const <Device>[]});
+  const DeviceLoaded({required this.device});
 
   @override
   List<Object> get props => [device];

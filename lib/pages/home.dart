@@ -58,7 +58,13 @@ class _MyHomeState extends State<Home> {
         create: (context) => PetBloc(
           petRepository: PetRepository(),
         )..add(LoadPet()),
-        child: Builder(
+        child: RepositoryProvider(
+        create: (context) => DeviceRepository(),
+    child: BlocProvider(
+    create: (context) => DeviceBloc(
+    deviceRepository: DeviceRepository(),
+    ),
+    child: Builder(
         builder: (context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(253, 253, 253, 1),
@@ -210,7 +216,6 @@ class _MyHomeState extends State<Home> {
           ),
           floatingActionButton: FloatingActionButton(
               onPressed: () {_pressCreatePet(context);},
-              tooltip: 'Scan Barcode',
               elevation: 0,
               backgroundColor: Color.fromRGBO(151, 196, 232, 1),
               shape: const RoundedRectangleBorder(
@@ -222,6 +227,8 @@ class _MyHomeState extends State<Home> {
       },
         ),
     ),
+    ),
+      ),
     );
   }
 
@@ -392,6 +399,6 @@ class PetCard extends StatelessWidget {
 }
 
 void _deletePet(context, Pet pet) {
-  //BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(pet.IDDevice, false));
+  BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(pet.IDDevice, false));
   BlocProvider.of<PetBloc>(context).add(DeletePet(pet));
 }

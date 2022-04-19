@@ -11,15 +11,29 @@ class PetRepository extends BasePetRepository {
       : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
   @override
-  Stream<List<Pet>> getAllPet() {
-    return _firebaseFirestore.collection("Pet").where("IDUser", isEqualTo: FirebaseAuth.instance.currentUser!.uid).where("IsDelete", isEqualTo: false).snapshots().map((snap) {
+  Stream<List<Pet>> getPet() {
+    return _firebaseFirestore.collection("Pet").where("ShareTo", arrayContains: FirebaseAuth.instance.currentUser!.uid).where("IsDelete", isEqualTo: false).snapshots().map((snap) {
       return snap.docs.map((doc) => Pet.fromSnapshot(doc)).toList();
     });
   }
 
   @override
   Future<void> createPet(Pet pet) async {
-    await _firebaseFirestore.collection('Pet').doc(pet.id).set(pet.toMap());
+    await _firebaseFirestore.collection('Pet').doc(pet.id).set(pet.toMap(FirebaseAuth.instance.currentUser!.uid));
+  }
+
+  @override
+  Future<void> sharePet(Pet pet, String User) async {
+    return _firebaseFirestore.collection('Pet').doc(pet.id).update({
+      "ShareTo": FieldValue.arrayUnion([User])
+    });
+  }
+
+  @override
+  Future<void> removeSharePet(Pet pet, String User) async {
+    return _firebaseFirestore.collection('Pet').doc(pet.id).update({
+      "ShareTo": FieldValue.arrayRemove([User])
+    });
   }
 
   @override
@@ -27,7 +41,7 @@ class PetRepository extends BasePetRepository {
     return _firebaseFirestore
         .collection('Pet')
         .doc(pet.id)
-        .update(pet.toMap())
+        .update(pet.toMap(pet.IDUser))
         .then(
           (value) => print('Pet document updated.'),
         );

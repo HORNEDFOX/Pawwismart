@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/pages/settingApp.dart';
 import 'package:pawwismart/pages/slideRightRoute.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../bloc/bloc/auth_bloc.dart';
+import 'home.dart';
 
 class FlexiableAppBar extends StatelessWidget {
   final double appBarHeight = 30.0;
@@ -87,10 +89,21 @@ class FlexiableAppBar extends StatelessWidget {
                               ),
                               onTap: () {
                                 Navigator.push(
-                                  context,
-                                  SlideLeftRoute(page: SettingApp()),
-                               );
+                                    context,
+                                    PageTransition(
+                                      alignment: Alignment.bottomCenter,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration: Duration(milliseconds: 600),
+                                      reverseDuration:
+                                          Duration(milliseconds: 600),
+                                      type:
+                                          PageTransitionType.rightToLeftJoined,
+                                      child: SettingApp(),
+                                      childCurrent: Home(),
+                                    ));
                               },
+                              //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftJoined, child: const SettingApp()));
+                              // },
                             ),
                           ),
                         )),
@@ -188,7 +201,7 @@ class FlexiableAppBar extends StatelessWidget {
                             width: 110,
                             height: 24,
                             alignment: Alignment.centerLeft,
-                            child: Text('Archive',
+                            child: Text('Alerts',
                                 style: TextStyle(
                                   color: Color.fromRGBO(74, 85, 104, 1),
                                   fontSize: 24,
@@ -202,7 +215,7 @@ class FlexiableAppBar extends StatelessWidget {
                               width: 110,
                               height: 56,
                               alignment: Alignment.centerLeft,
-                              child: Text('View the archive of pet walks',
+                              child: Text('View archive of\napp alerts',
                                   style: TextStyle(
                                     color: Color.fromRGBO(74, 85, 104, 1),
                                     fontSize: 12,

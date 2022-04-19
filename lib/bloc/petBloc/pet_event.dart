@@ -32,6 +32,28 @@ class AddPet extends PetEvent {
   String toString() => 'Add Pet { record: $pet }';
 }
 
+class SharePet extends PetEvent {
+  final Pet pet;
+  final String User;
+
+  const SharePet(this.pet, this.User);
+
+  @override
+  List<Object> get props => [pet];
+
+}
+
+class RemoveSharePet extends PetEvent {
+  final Pet pet;
+  final String User;
+
+  const RemoveSharePet(this.pet, this.User);
+
+  @override
+  List<Object> get props => [pet];
+
+}
+
 class DeletePet extends PetEvent{
   final Pet pet;
 

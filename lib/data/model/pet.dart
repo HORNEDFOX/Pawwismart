@@ -37,13 +37,14 @@ class Pet extends Equatable {
     return pet;
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(String Owner) {
     return {
       'Name': name,
       'Image': image,
       'IDUser': IDUser,
       'IDDevice': IDDevice,
       'IsDelete': isDelete,
+      'ShareTo': FieldValue.arrayUnion([Owner]),
     };
   }
 }

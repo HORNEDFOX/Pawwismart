@@ -1,0 +1,34 @@
+import 'dart:async';
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+
+import '../../data/model/share.dart';
+import '../../data/repositories/share_repository.dart';
+
+part 'share_state.dart';
+part 'share_event.dart';
+
+class ShareBloc extends Bloc<ShareEvent, ShareState> {
+  final ShareRepository _shareRepository;
+  StreamSubscription? _shareSubscription;
+
+  ShareBloc({required ShareRepository shareRepository})
+      : _shareRepository = shareRepository,
+        super(ShareLoading()) {
+    on<LoadShare>(_onLoadShare);
+    on<UpdateShare>(_onUpdateShare);
+  }
+
+  void _onLoadShare(LoadShare event, Emitter<ShareState> emit) {
+    _shareSubscription?.cancel();
+    _shareSubscription = _shareRepository.getAllSharePet().listen(
+          (share) => add(UpdateShare(share),
+      ),
+    );
+  }
+
+  void _onUpdateShare(UpdateShare event, Emitter<ShareState> emit) {
+    emit(ShareLoaded(share: event.share));
+  }
+}

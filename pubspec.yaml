@@ -96,6 +96,7 @@ flutter:
      - assets/images/background.svg
      - assets/images/background.png
      - assets/images/close.svg
+     - assets/images/chevron-right.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

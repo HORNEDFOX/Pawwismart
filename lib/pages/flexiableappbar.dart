@@ -93,9 +93,9 @@ class FlexiableAppBar extends StatelessWidget {
                                     PageTransition(
                                       alignment: Alignment.bottomCenter,
                                       curve: Curves.fastOutSlowIn,
-                                      duration: Duration(milliseconds: 600),
+                                      duration: Duration(milliseconds: 800),
                                       reverseDuration:
-                                          Duration(milliseconds: 600),
+                                          Duration(milliseconds: 400),
                                       type:
                                           PageTransitionType.rightToLeftJoined,
                                       child: SettingApp(),

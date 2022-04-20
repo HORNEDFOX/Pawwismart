@@ -35,96 +35,21 @@ class SettingApp extends StatelessWidget {
                     fontWeight: FontWeight.w900,)
               ),
             ),
-            SettingCard(),
-            SettingCard(),
-            SettingCard(),
-
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 15, 15, 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        alignment: Alignment.topLeft,
-                        padding: EdgeInsets.fromLTRB(15, 0, 0, 3),
-                        child: Text('PASSWORD',
-                            style: TextStyle(
-                              color: Color.fromRGBO(74, 85, 104, 1),
-                              fontSize: 18,
-                              fontFamily: 'Open Sans',
-                              fontWeight: FontWeight.w900,)
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                        child: Text('Change account password',
-                            style: TextStyle(
-                              color: Color.fromRGBO(74, 85, 104, 1),
-                              fontSize: 14,
-                              fontFamily: 'Open Sans',
-                              fontWeight: FontWeight.w300,)
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    child: FlatButton(
-                      onPressed: () {},
-                      padding: EdgeInsets.all(0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Color.fromRGBO(151, 196, 232, 1),
-                              Color.fromRGBO(151, 196, 232, 1),
-                              Color.fromRGBO(151, 196, 232, 1),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          constraints: BoxConstraints(
-                              minHeight: 30, maxWidth: double.infinity),
-                          child: Text(
-                            ">",
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            SettingCardSwitch("LOST PETS", "Let me know if there is a lost pet in the vicibity"),
+            SettingCardButton("PASSWORD", "Change account password"),
+            SettingCardButton("ACCOUNT", "Google, Facebook, Twitter"),
             Container(
               alignment: Alignment.topLeft,
-              padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
               child: Text('Remove',
                   style: TextStyle(
-                    color: Color.fromRGBO(74, 85, 104, 1),
+                    color: Color.fromRGBO(151, 196, 232, 1),
                     fontSize: 30,
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w900,)
               ),
             ),
+            SettingCardButton("DELETE", "Delete my account and data in the app"),
           ],
         ),
       ),
@@ -216,7 +141,12 @@ class UserCard extends StatelessWidget {
   }
 }
 
-class SettingCard extends StatelessWidget {
+class SettingCardSwitch extends StatelessWidget {
+
+  late String parameter;
+  late String description;
+
+  SettingCardSwitch(this.parameter, this.description);
 
   @override
   Widget build(BuildContext context) {
@@ -224,13 +154,13 @@ class SettingCard extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(0, 1, 1, 0),
       borderOnForeground: true,
       color: Colors.white,
-      elevation: 1.0,
+      elevation: 0.0,
       shadowColor: Color.fromRGBO(148, 161, 187, 0.2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0.0),
       ),
       child:             Container(
-        padding: EdgeInsets.fromLTRB(0, 12, 15, 12),
+        padding: EdgeInsets.fromLTRB(5, 12, 15, 12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -241,7 +171,7 @@ class SettingCard extends StatelessWidget {
                 Container(
                   alignment: Alignment.topLeft,
                   padding: EdgeInsets.fromLTRB(15, 0, 0, 3),
-                  child: Text('LOST PETS',
+                  child: Text(parameter,
                       style: TextStyle(
                         color: Color.fromRGBO(74, 85, 104, 1),
                         fontSize: 18,
@@ -252,8 +182,7 @@ class SettingCard extends StatelessWidget {
                 Container(
                   alignment: Alignment.topCenter,
                   padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                  child: Text(
-                      'Let me know if there is a lost pet in the vicinity',
+                  child: Text(description,
                       style: TextStyle(
                         color: Color.fromRGBO(74, 85, 104, 1),
                         fontSize: 14,
@@ -270,6 +199,96 @@ class SettingCard extends StatelessWidget {
               trackColor: Color.fromRGBO(74, 85, 104, 1),
               onChanged: null, value: true,
             ),
+          ],
+        ),
+      ),
+    ); // <== The Card class constructor
+  }
+}
+
+class SettingCardButton extends StatelessWidget {
+
+  late String parameter;
+  late String description;
+
+  SettingCardButton(this.parameter, this.description);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.fromLTRB(0, 1, 1, 0),
+      borderOnForeground: true,
+      color: Colors.white,
+      elevation: 0.0,
+      shadowColor: Color.fromRGBO(148, 161, 187, 0.2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      child:            Container(
+        padding:  EdgeInsets.fromLTRB(5, 12, 15, 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.fromLTRB(15, 0, 0, 3),
+                  child: Text(parameter,
+                      style: TextStyle(
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                        fontSize: 18,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.w900,)
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                  child: Text(description,
+                      style: TextStyle(
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                        fontSize: 14,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.w300,)
+                  ),
+                )
+              ],
+            ),
+            Container(
+              height: 36,
+              width: 36,
+              child: FlatButton(
+                onPressed: () {},
+                padding: EdgeInsets.all(0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color.fromRGBO(151, 196, 232, 1),
+                        Color.fromRGBO(151, 196, 232, 1),
+                        Color.fromRGBO(151, 196, 232, 1),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    constraints: BoxConstraints(
+                        minHeight: 30, maxWidth: double.infinity),
+                    child: SvgPicture.asset(
+                        "assets/images/chevron-right.svg"),
+                  ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/pages/flexiableappbar.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:pawwismart/pages/createPet.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../bloc/device/device_bloc.dart';
 import '../bloc/share/share_bloc.dart';
@@ -193,9 +195,139 @@ class _MyHomeState extends State<Home> {
                               return SliverList(
                                 delegate: SliverChildBuilderDelegate(
                                   (buildContext, index) {
-                                    //return PetCard(pet: state.pets.elementAt(index));
-                                    return PetCard(
-                                        pet: state.pets.elementAt(index));
+                                    return Slidable(
+                                      // Specify a key if the Slidable is dismissible.
+                                      key: const ValueKey(0),
+                                      // The end action pane is the one at the right or the bottom side.
+                                      endActionPane: ActionPane(
+                                        motion: BehindMotion(),
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                15, 0, 0, 0),
+                                            padding:
+                                                EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                            height: 70,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  243, 246, 251, 0.5),
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10.0),
+                                                bottomLeft:
+                                                    Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            child: CustomSlidableAction(
+                                              onPressed: (_) {
+                                                if (state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid)
+                                                  confirmDialog(context, state.pets.elementAt(index));
+                                              },
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              foregroundColor: Color.fromRGBO(
+                                                  243, 246, 251, 1),
+                                              child: Container(
+                                                  height: 70,
+                                                  width: 200,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        "assets/images/trash.svg",
+                                                        color: state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid
+                                                            ? Color.fromRGBO(255, 79, 81, 1)
+                                                            : Color.fromRGBO(148, 161, 187, 0.2),
+                                                        height: 25,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                      Text("Delete",
+                                                          style: TextStyle(
+                                                            color: state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid
+                                                                ? Color.fromRGBO(255, 79, 81, 1)
+                                                                : Color.fromRGBO(148, 161, 187, 0.2),
+                                                            fontSize: 15,
+                                                            fontFamily:
+                                                                'Open Sans',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          )),
+                                                    ],
+                                                  )),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 0, 15, 0),
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            height: 70,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  243, 246, 251, 0.5),
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(10.0),
+                                                bottomRight:
+                                                    Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            child: CustomSlidableAction(
+                                              onPressed: (context) {
+                                                if (state.pets.elementAt(index).IDUser != FirebaseAuth.instance.currentUser!.uid)
+                                                  _removeSharePet(context, state.pets.elementAt(index));
+                                                },
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              foregroundColor: Color.fromRGBO(
+                                                  243, 246, 251, 1),
+                                              child: Container(
+                                                  height: 70,
+                                                  width: 200,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      SvgPicture.asset("assets/images/share.svg",
+                                                        color: Color.fromRGBO(
+                                                            148, 161, 187, 1),
+                                                        height: 25,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                      Text(state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid ? "Share" : "Remove",
+                                                          style: TextStyle(
+                                                            color: Color.fromRGBO(148, 161, 187, 1),
+                                                            fontSize: 15,
+                                                            fontFamily:
+                                                                'Open Sans',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          )),
+                                                    ],
+                                                  )),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      // The child of the Slidable is what the user sees when the
+                                      // component is not dragged.
+                                      child: PetCard(
+                                          pet: state.pets.elementAt(index)),
+                                    );
                                   },
                                   childCount: state.pets.length,
                                 ),
@@ -423,15 +555,72 @@ class PetCard extends StatelessWidget {
   }
 }
 
+Future confirmDialog(context, Pet pet) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: true, // user must tap button for close dialog!
+    builder: (_) {
+      return AlertDialog(
+        title: Text('Delete ${pet.name}?',
+            style: TextStyle(
+              color: Color.fromRGBO(74, 85, 104, 1),
+              fontSize: 23,
+              fontFamily: 'Open Sans',
+              fontWeight: FontWeight.w900,
+            )),
+        content: Text(
+            'Are you sure you want to delete the pet? This action cannot be undone!',
+            style: TextStyle(
+              color: Color.fromRGBO(79, 79, 79, 1),
+              fontSize: 16,
+              fontFamily: 'Open Sans',
+              fontWeight: FontWeight.w400,
+            )),
+        actions: <Widget>[
+          FlatButton(
+            minWidth: 50,
+            child: Text('CANCEL',
+                style: TextStyle(
+                  color: Color.fromRGBO(79, 79, 79, 1),
+                  fontSize: 18,
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w600,
+                )),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text('DELETE',
+                style: TextStyle(
+                  color: Color.fromRGBO(255, 79, 81, 1),
+                  fontSize: 18,
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w900,
+                )),
+            onPressed: () {
+              _deletePet(context, pet);
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
 void _deletePet(context, Pet pet) {
   BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(pet.IDDevice, false));
   BlocProvider.of<PetBloc>(context).add(DeletePet(pet));
 }
 
 void _sharePet(context, Pet pet) {
-  BlocProvider.of<PetBloc>(context).add(SharePet(pet, "d052HRnhI9f5W7WAr1HwF759Nws1"));
+  BlocProvider.of<PetBloc>(context)
+      .add(SharePet(pet, "d052HRnhI9f5W7WAr1HwF759Nws1"));
 }
 
+void doNothing(BuildContext context) {}
+
 void _removeSharePet(context, Pet pet) {
-  BlocProvider.of<PetBloc>(context).add(RemoveSharePet(pet, "82"));
+  BlocProvider.of<PetBloc>(context).add(RemoveSharePet(pet, FirebaseAuth.instance.currentUser!.uid));
 }

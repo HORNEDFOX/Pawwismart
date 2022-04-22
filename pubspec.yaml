@@ -50,6 +50,7 @@ dependencies:
   path_provider: ^2.0.9
   flutter_image_compress: ^1.1.0
   page_transition: ^2.0.5
+  flutter_slidable: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -97,6 +98,8 @@ flutter:
      - assets/images/background.png
      - assets/images/close.svg
      - assets/images/chevron-right.svg
+     - assets/images/share.svg
+     - assets/images/trash.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

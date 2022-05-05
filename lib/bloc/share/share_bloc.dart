@@ -22,7 +22,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
 
   void _onLoadShare(LoadShare event, Emitter<ShareState> emit) {
     _shareSubscription?.cancel();
-    _shareSubscription = _shareRepository.getAllSharePet().listen(
+    _shareSubscription = _shareRepository.getAllSharePet(event.pet).listen(
           (share) => add(UpdateShare(share),
       ),
     );

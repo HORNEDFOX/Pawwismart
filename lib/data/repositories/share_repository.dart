@@ -12,8 +12,8 @@ class ShareRepository {
       : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
   @override
-  Stream<List<Share>> getAllSharePet() {
-    return _firebaseFirestore.collection("Share").where("IDUser", isEqualTo: FirebaseAuth.instance.currentUser!.uid).where("IsActive", isEqualTo: true).snapshots().map((snap) {
+  Stream<List<Share>> getAllSharePet(String pet) {
+    return _firebaseFirestore.collection("Share").where("IDPet", isEqualTo: pet).where("IsActive", isEqualTo: true).snapshots().map((snap) {
       return snap.docs.map((doc) => Share.fromSnapshot(doc)).toList();
     });
   }

@@ -7,7 +7,11 @@ abstract class ShareEvent extends Equatable{
   List<Object> get props => [];
 }
 
-class LoadShare extends ShareEvent{}
+class LoadShare extends ShareEvent{
+  final String pet;
+
+  LoadShare(this.pet);
+}
 
 class UpdateShare extends ShareEvent {
   final List<Share> share;

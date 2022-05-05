@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
                 }
                 return BackgroundVideo();
               }),
+          debugShowCheckedModeBanner: false,
         ),
       ),
     );
@@ -57,6 +58,7 @@ class BackgroundVideo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
@@ -101,6 +103,7 @@ class LoginWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Color.fromRGBO(159, 161, 212, 0.65),
         body: SingleChildScrollView(

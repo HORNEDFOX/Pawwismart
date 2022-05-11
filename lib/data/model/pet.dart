@@ -7,23 +7,27 @@ class Pet extends Equatable {
   final String image;
   final String IDUser;
   final String IDDevice;
+  final double ? latitude;
+  final double ? longitude;
   final bool isDelete;
 
   const Pet(
       {required this.id,
       required this.name,
       required this.image,
+        this.latitude,
+        this.longitude,
       required this.IDUser,
       required this.IDDevice,
       required this.isDelete});
 
   @override
   // TODO: implement props
-  List<Object> get props => [id, name, image, IDUser, IDDevice, isDelete];
+  List<Object> get props => [id, name, image, {latitude, longitude}, IDUser, IDDevice, isDelete];
 
   @override
   String toString() {
-    return 'PetEntity { id: $id, name: $name, image: $image, IDUser: $IDUser, IDDevice: $IDDevice, is delete: $isDelete}';
+    return 'PetEntity { id: $id, name: $name, image: $image, latitude: $latitude, longitude: $longitude, IDUser: $IDUser, IDDevice: $IDDevice, is delete: $isDelete}';
   }
 
   static Pet fromSnapshot(DocumentSnapshot snap) {
@@ -31,6 +35,8 @@ class Pet extends Equatable {
         id: snap.id,
         name: snap['Name'],
         image: snap['Image'],
+        latitude: snap['Latitude'],
+        longitude: snap['Longitude'],
         IDUser: snap['IDUser'],
         IDDevice: snap['IDDevice'],
         isDelete: snap['IsDelete']);

@@ -14,7 +14,8 @@ import '../data/model/pet.dart';
 import '../data/repositories/device_repository.dart';
 import '../data/repositories/pet_repository.dart';
 import '../data/repositories/share_repository.dart';
-import 'map.dart';
+import 'mapFence.dart';
+import 'mapOnePet.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -128,39 +129,27 @@ class _MyHomeState extends State<Home> {
                                     fontWeight: FontWeight.w900,
                                   )),
                               Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 10.0, right: 10.0),
-                                  child: Container(
-                                    //width: 30,
-                                    height: 25,
-                                    alignment: Alignment.centerLeft,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 2, horizontal: 8),
-                                    decoration: BoxDecoration(
-                                      color: isShrink
-                                          ? Color.fromRGBO(86, 98, 120, 1)
-                                          : Color.fromRGBO(243, 246, 251, 1),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        BlocBuilder<PetBloc, PetState>(
-                                            builder: (context, state) {
-                                          if (state is PetLoaded) {
-                                            return Text('${state.pets.length}',
-                                                style: TextStyle(
-                                                  color: isShrink
-                                                      ? Color.fromRGBO(
-                                                          243, 246, 251, 1)
-                                                      : Color.fromRGBO(
-                                                          148, 161, 187, 1),
-                                                  fontSize: 14,
-                                                  fontFamily: 'Open Sans',
-                                                  fontWeight: FontWeight.w400,
-                                                ));
-                                          }
-                                          return Text('0',
+                                padding:
+                                    EdgeInsets.only(left: 10.0, right: 10.0),
+                                child: Container(
+                                  //width: 30,
+                                  height: 25,
+                                  alignment: Alignment.centerLeft,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: isShrink
+                                        ? Color.fromRGBO(86, 98, 120, 1)
+                                        : Color.fromRGBO(243, 246, 251, 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      BlocBuilder<PetBloc, PetState>(
+                                          builder: (context, state) {
+                                        if (state is PetLoaded) {
+                                          return Text('${state.pets.length}',
                                               style: TextStyle(
                                                 color: isShrink
                                                     ? Color.fromRGBO(
@@ -171,10 +160,22 @@ class _MyHomeState extends State<Home> {
                                                 fontFamily: 'Open Sans',
                                                 fontWeight: FontWeight.w400,
                                               ));
-                                        }),
-                                      ],
-                                    ),
+                                        }
+                                        return Text('0',
+                                            style: TextStyle(
+                                              color: isShrink
+                                                  ? Color.fromRGBO(
+                                                      243, 246, 251, 1)
+                                                  : Color.fromRGBO(
+                                                      148, 161, 187, 1),
+                                              fontSize: 14,
+                                              fontFamily: 'Open Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ));
+                                      }),
+                                    ],
                                   ),
+                                ),
                               ),
                             ],
                           ),
@@ -216,24 +217,48 @@ class _MyHomeState extends State<Home> {
                                             ),
                                             child: CustomSlidableAction(
                                               onPressed: (_) {
-                                                if (state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid)
-                                                  confirmDialog(context, state.pets.elementAt(index));
+                                                if (state.pets
+                                                        .elementAt(index)
+                                                        .IDUser ==
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid)
+                                                  confirmDialog(
+                                                      context,
+                                                      state.pets
+                                                          .elementAt(index));
                                               },
-                                              backgroundColor: Colors.transparent,
+                                              backgroundColor:
+                                                  Colors.transparent,
                                               foregroundColor: Color.fromRGBO(
                                                   243, 246, 251, 1),
                                               child: Container(
                                                   height: 70,
                                                   width: 200,
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
                                                       SvgPicture.asset(
                                                         "assets/images/trash.svg",
-                                                        color: state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid
-                                                            ? Color.fromRGBO(255, 79, 81, 1)
-                                                            : Color.fromRGBO(148, 161, 187, 0.2),
+                                                        color: state.pets
+                                                                    .elementAt(
+                                                                        index)
+                                                                    .IDUser ==
+                                                                FirebaseAuth
+                                                                    .instance
+                                                                    .currentUser!
+                                                                    .uid
+                                                            ? Color.fromRGBO(
+                                                                255, 79, 81, 1)
+                                                            : Color.fromRGBO(
+                                                                148,
+                                                                161,
+                                                                187,
+                                                                0.2),
                                                         height: 25,
                                                       ),
                                                       SizedBox(
@@ -241,12 +266,31 @@ class _MyHomeState extends State<Home> {
                                                       ),
                                                       Text("Delete",
                                                           style: TextStyle(
-                                                            color: state.pets.elementAt(index).IDUser == FirebaseAuth.instance.currentUser!.uid
-                                                                ? Color.fromRGBO(255, 79, 81, 1)
-                                                                : Color.fromRGBO(148, 161, 187, 0.2),
+                                                            color: state.pets
+                                                                        .elementAt(
+                                                                            index)
+                                                                        .IDUser ==
+                                                                    FirebaseAuth
+                                                                        .instance
+                                                                        .currentUser!
+                                                                        .uid
+                                                                ? Color
+                                                                    .fromRGBO(
+                                                                        255,
+                                                                        79,
+                                                                        81,
+                                                                        1)
+                                                                : Color
+                                                                    .fromRGBO(
+                                                                        148,
+                                                                        161,
+                                                                        187,
+                                                                        0.2),
                                                             fontSize: 15,
-                                                            fontFamily: 'Open Sans',
-                                                            fontWeight: FontWeight.w600,
+                                                            fontFamily:
+                                                                'Open Sans',
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                           )),
                                                     ],
                                                   )),
@@ -275,14 +319,20 @@ class _MyHomeState extends State<Home> {
                                                         .IDUser !=
                                                     FirebaseAuth.instance
                                                         .currentUser!.uid) {
-                                                  _removeSharePet(context, state.pets.elementAt(index));
+                                                  _removeSharePet(
+                                                      context,
+                                                      state.pets
+                                                          .elementAt(index));
                                                 }
                                                 if (state.pets
                                                         .elementAt(index)
                                                         .IDUser ==
                                                     FirebaseAuth.instance
                                                         .currentUser!.uid) {
-                                                  _sharePet(context, state.pets.elementAt(index));
+                                                  _sharePet(
+                                                      context,
+                                                      state.pets
+                                                          .elementAt(index));
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -349,7 +399,9 @@ class _MyHomeState extends State<Home> {
                                       // The child of the Slidable is what the user sees when the
                                       // component is not dragged.
                                       child: PetCard(
-                                          pet: state.pets.elementAt(index)),
+                                        pet: state.pets.elementAt(index),
+                                        index: index,
+                                      ),
                                     ),
                                   ),
                                 );
@@ -418,8 +470,9 @@ class _MyHomeState extends State<Home> {
 
 class PetCard extends StatelessWidget {
   late Pet pet;
+  late int index;
 
-  PetCard({required Pet pet}) {
+  PetCard({required Pet pet, required this.index}) {
     this.pet = pet;
   }
 
@@ -433,153 +486,161 @@ class PetCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
       ),
-    child: InkWell(
-    splashColor: Colors.white,
-    onTap: () {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage()));
-    debugPrint('Card tapped.');
-    },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Column(
-                children: <Widget>[
-                  Center(
-                    child: CircleAvatar(
-                      radius: 45.0,
-                      backgroundImage: NetworkImage(pet.image.toString()),
-                      backgroundColor: Colors.transparent,
-                    ),
-                  ),
-                ],
+      child: InkWell(
+        splashColor: Colors.white,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MapOnePage(),
+              settings: RouteSettings(
+                arguments: index,
               ),
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.57,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          child: Text(pet.name,
-                              style: TextStyle(
-                                color: Color.fromRGBO(74, 85, 104, 1),
-                                fontSize: 23,
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.w900,
-                              )),
-                        ),
-                        Container(
-                            child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Material(
-                            color: Color.fromRGBO(255, 255, 255, 1),
-                            child: InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: SvgPicture.asset(
-                                    "assets/images/filterBig.svg"),
-                              ),
-                              onTap: () {
-                                //_deletePet(context, pet);
-                                //_removeSharePet(context, pet);
-                              },
-                            ),
+          );
+          debugPrint('Card tapped.');
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: CircleAvatar(
+                        radius: 45.0,
+                        backgroundImage: NetworkImage(pet.image.toString()),
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.57,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Container(
+                            child: Text(pet.name,
+                                style: TextStyle(
+                                  color: Color.fromRGBO(74, 85, 104, 1),
+                                  fontSize: 23,
+                                  fontFamily: 'Open Sans',
+                                  fontWeight: FontWeight.w900,
+                                )),
                           ),
-                        )),
-                      ],
+                          Container(
+                              child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Material(
+                              color: Color.fromRGBO(255, 255, 255, 1),
+                              child: InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: SvgPicture.asset(
+                                      "assets/images/filterBig.svg"),
+                                ),
+                                onTap: () {
+                                  //_deletePet(context, pet);
+                                  //_removeSharePet(context, pet);
+                                },
+                              ),
+                            ),
+                          )),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 3, horizontal: 0),
-                    child: Text("111 57 Stockholm 4 mins ago",
-                        style: TextStyle(
-                          color: Color.fromRGBO(79, 79, 79, 1),
-                          fontSize: 14,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.w400,
-                        )),
-                  ),
-                  Container(
-                    height: 10,
-                  ),
-                  Container(
-                    height: 35,
-                    alignment: Alignment.centerLeft,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(243, 246, 251, 1),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 0),
+                      child: Text("111 57 Stockholm 4 mins ago",
+                          style: TextStyle(
+                            color: Color.fromRGBO(79, 79, 79, 1),
+                            fontSize: 14,
+                            fontFamily: 'Open Sans',
+                            fontWeight: FontWeight.w400,
+                          )),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Text("Device ID${pet.IDDevice}",
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(148, 161, 187, 1),
-                                    fontSize: 14,
-                                    fontFamily: 'Open Sans',
-                                    fontWeight: FontWeight.w400,
-                                  )),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.07,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 6),
-                              child:
-                                  SvgPicture.asset("assets/images/NSLight.svg"),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
-                              child: SvgPicture.asset(
-                                  "assets/images/batteryLight.svg"),
-                            ),
-                            Container(
-                              child: Text("50%",
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(148, 161, 187, 1),
-                                    fontSize: 14,
-                                    fontFamily: 'Open Sans',
-                                    fontWeight: FontWeight.w400,
-                                  )),
-                            ),
-                          ],
-                        )
-                      ],
+                    Container(
+                      height: 10,
                     ),
-                  ),
-                ],
+                    Container(
+                      height: 35,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(243, 246, 251, 1),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Text("Device ID${pet.IDDevice}",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(148, 161, 187, 1),
+                                      fontSize: 14,
+                                      fontFamily: 'Open Sans',
+                                      fontWeight: FontWeight.w400,
+                                    )),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.07,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 6),
+                                child: SvgPicture.asset(
+                                    "assets/images/NSLight.svg"),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
+                                child: SvgPicture.asset(
+                                    "assets/images/batteryLight.svg"),
+                              ),
+                              Container(
+                                child: Text("50%",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(148, 161, 187, 1),
+                                      fontSize: 14,
+                                      fontFamily: 'Open Sans',
+                                      fontWeight: FontWeight.w400,
+                                    )),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     ); // <== The Card class constructor
   }
 }

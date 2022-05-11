@@ -1,6 +1,6 @@
 part of 'pet_bloc.dart';
 
-abstract class PetEvent extends Equatable{
+abstract class PetEvent{
   const PetEvent();
 
   @override

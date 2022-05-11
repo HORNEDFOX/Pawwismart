@@ -56,6 +56,8 @@ dependencies:
   vector_map_tiles: ^1.5.0
   vector_tile_renderer: ^2.4.5
   flutter_map_tappable_polyline: ^3.1.0
+  sliding_up_panel: ^2.0.0+1
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -107,6 +109,9 @@ flutter:
      - assets/images/trash.svg
      - assets/images/plus.svg
      - assets/images/map.svg
+     - assets/images/check-circle.svg
+     - assets/images/circle-slashed.svg
+     - assets/images/ellipse.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

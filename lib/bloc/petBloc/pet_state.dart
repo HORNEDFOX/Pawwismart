@@ -1,6 +1,6 @@
 part of 'pet_bloc.dart';
 
-abstract class PetState extends Equatable{
+abstract class PetState{
   const PetState();
 
   @override

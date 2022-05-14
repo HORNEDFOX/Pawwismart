@@ -112,6 +112,10 @@ flutter:
      - assets/images/check-circle.svg
      - assets/images/circle-slashed.svg
      - assets/images/ellipse.svg
+     - assets/images/locate-current.svg
+     - assets/images/maximize.svg
+     - assets/images/minimize.svg
+     - assets/images/save_zone.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

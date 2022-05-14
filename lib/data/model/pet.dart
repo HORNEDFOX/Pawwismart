@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Pet extends Equatable {
-  final String id;
+  final String ? id;
   final String name;
   final String image;
   final String IDUser;
@@ -12,7 +12,7 @@ class Pet extends Equatable {
   final bool isDelete;
 
   const Pet(
-      {required this.id,
+      {this.id,
       required this.name,
       required this.image,
         this.latitude,
@@ -23,7 +23,7 @@ class Pet extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object> get props => [id, name, image, {latitude, longitude}, IDUser, IDDevice, isDelete];
+  List<Object> get props => [{id}, name, image, {latitude, longitude}, IDUser, IDDevice, isDelete];
 
   @override
   String toString() {
@@ -49,6 +49,8 @@ class Pet extends Equatable {
       'Image': image,
       'IDUser': IDUser,
       'IDDevice': IDDevice,
+      'Longitude': longitude,
+      'Latitude': latitude,
       'IsDelete': isDelete,
       'ShareTo': FieldValue.arrayUnion([Owner]),
     };

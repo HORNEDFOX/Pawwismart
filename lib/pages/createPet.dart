@@ -512,7 +512,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
 
   void _createPet(BuildContext context, Device device) {
     if (_formKey.currentState!.validate()) {
-      Pet pet = Pet(id: _nameController.text+FirebaseAuth.instance.currentUser!.uid, name: _nameController.text, image: Image.toString(), IDUser: FirebaseAuth.instance.currentUser!.uid, IDDevice: QRCode, isDelete: false);
+      Pet pet = Pet(name: _nameController.text, image: Image.toString(), IDUser: FirebaseAuth.instance.currentUser!.uid, IDDevice: QRCode, isDelete: false, latitude: 1.1, longitude: 1.1);
       BlocProvider.of<PetBloc>(context).add(AddPet(pet));
       BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(device.IDDevice, true));
     }

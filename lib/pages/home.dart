@@ -705,7 +705,7 @@ void _deletePet(context, Pet pet) {
 }
 
 void _sharePet(context, Pet pet) {
-  BlocProvider.of<ShareBloc>(context).add(LoadShare(pet.id));
+  BlocProvider.of<ShareBloc>(context).add(LoadShare(pet.id!));
 }
 
 void doNothing(BuildContext context) {}

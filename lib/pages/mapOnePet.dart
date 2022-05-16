@@ -6,6 +6,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/data/repositories/pet_repository.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../data/model/pet.dart';
 
@@ -18,11 +20,14 @@ class MapOnePage extends StatefulWidget {
 
 class _MapOnePage extends State<MapOnePage> {
   late MapController _mapController;
+  double currentZoom = 15.0;
   var index;
+  String address = "Searh";
 
   @override
   void initState() {
     _mapController = MapController();
+    //_mapController.move(_mapController.center, currentZoom);
     super.initState();
   }
 
@@ -47,7 +52,7 @@ class _MapOnePage extends State<MapOnePage> {
                           state.pets.elementAt(index).longitude!),
                       interactiveFlags:
                           InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                      zoom: 14,
+                      zoom: currentZoom,
                       minZoom: 2,
                       maxZoom: 17,
                     ),
@@ -197,8 +202,12 @@ class _MapOnePage extends State<MapOnePage> {
                                                           ),
                                                         ),
                                                         onTap: () {
-                                                          Navigator.pop(
-                                                              context);
+                                                          if (currentZoom < 17)
+                                                            _mapController.move(
+                                                                _mapController
+                                                                    .center,
+                                                                currentZoom +=
+                                                                    1);
                                                         },
                                                       ),
                                                     ),
@@ -255,8 +264,12 @@ class _MapOnePage extends State<MapOnePage> {
                                                           ),
                                                         ),
                                                         onTap: () {
-                                                          Navigator.pop(
-                                                              context);
+                                                          if (currentZoom > 2)
+                                                            _mapController.move(
+                                                                _mapController
+                                                                    .center,
+                                                                currentZoom -=
+                                                                    1);
                                                         },
                                                       ),
                                                     ),
@@ -277,10 +290,8 @@ class _MapOnePage extends State<MapOnePage> {
                                     height: 48,
                                     width: 48,
                                     decoration: BoxDecoration(
-                                      color: Color.fromRGBO(
-                                          255, 255, 255, 0.9),
-                                      borderRadius:
-                                      BorderRadius.circular(12),
+                                      color: Color.fromRGBO(255, 255, 255, 0.9),
+                                      borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Color.fromRGBO(
@@ -292,9 +303,9 @@ class _MapOnePage extends State<MapOnePage> {
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                             height: 24,
@@ -306,16 +317,13 @@ class _MapOnePage extends State<MapOnePage> {
                                                 child: InkWell(
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets
-                                                        .all(0),
-                                                    child:
-                                                    SvgPicture.asset(
+                                                        const EdgeInsets.all(0),
+                                                    child: SvgPicture.asset(
                                                       "assets/images/save_zone.svg",
                                                     ),
                                                   ),
                                                   onTap: () {
-                                                    Navigator.pop(
-                                                        context);
+                                                    Navigator.pop(context);
                                                   },
                                                 ),
                                               ),
@@ -329,10 +337,8 @@ class _MapOnePage extends State<MapOnePage> {
                                     height: 48,
                                     width: 48,
                                     decoration: BoxDecoration(
-                                      color: Color.fromRGBO(
-                                          255, 255, 255, 0.9),
-                                      borderRadius:
-                                      BorderRadius.circular(12),
+                                      color: Color.fromRGBO(255, 255, 255, 0.9),
+                                      borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Color.fromRGBO(
@@ -344,9 +350,9 @@ class _MapOnePage extends State<MapOnePage> {
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                             height: 24,
@@ -358,16 +364,13 @@ class _MapOnePage extends State<MapOnePage> {
                                                 child: InkWell(
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets
-                                                        .all(0),
-                                                    child:
-                                                    SvgPicture.asset(
+                                                        const EdgeInsets.all(0),
+                                                    child: SvgPicture.asset(
                                                       "assets/images/locate-current.svg",
                                                     ),
                                                   ),
                                                   onTap: () {
-                                                    Navigator.pop(
-                                                        context);
+                                                    Navigator.pop(context);
                                                   },
                                                 ),
                                               ),
@@ -377,8 +380,9 @@ class _MapOnePage extends State<MapOnePage> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                PetCart(pet: state.pets.elementAt(index),),
-                            ],),
+                                PetCard(pet: state.pets.elementAt(index)),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -395,14 +399,34 @@ class _MapOnePage extends State<MapOnePage> {
   }
 }
 
-class PetCart extends StatelessWidget {
-
+class PetCard extends StatefulWidget {
   Pet pet;
 
-  PetCart({required this.pet});
+  PetCard({required this.pet});
+
+  @override
+  _PetCardState createState() => _PetCardState();
+}
+
+class _PetCardState extends State<PetCard> {
+  String _currentAddress = "Loading";
+
+  Future<void> _getAddressFromLatLng() async {
+    await placemarkFromCoordinates(widget.pet.latitude!, widget.pet.longitude!, localeIdentifier: "EN")
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.country}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    _getAddressFromLatLng();
     return Card(
       //margin: EdgeInsets.fromLTRB(15, 0, 15, 10),
       color: Color.fromRGBO(255, 255, 255, 0.9),
@@ -506,7 +530,8 @@ class PetCart extends StatelessWidget {
                       Center(
                         child: CircleAvatar(
                           radius: 24.0,
-                          backgroundImage: NetworkImage(pet.image.toString()),
+                          backgroundImage:
+                              NetworkImage(widget.pet.image.toString()),
                           backgroundColor: Colors.transparent,
                         ),
                       ),
@@ -518,14 +543,14 @@ class PetCart extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(pet.name,
+                            Text(widget.pet.name,
                                 style: TextStyle(
                                   color: Color.fromRGBO(74, 85, 104, 1),
                                   fontSize: 19,
                                   fontFamily: 'Open Sans',
                                   fontWeight: FontWeight.w900,
                                 )),
-                            Text("Brooklin 56 mins ago",
+                            Text(_currentAddress + " " + timeago.format(widget.pet.time!),
                                 style: TextStyle(
                                   color: Color.fromRGBO(79, 79, 79, 1),
                                   fontSize: 14,

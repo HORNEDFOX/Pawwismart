@@ -9,6 +9,7 @@ class Pet extends Equatable {
   final String IDDevice;
   final double ? latitude;
   final double ? longitude;
+  final DateTime ? time;
   final bool isDelete;
 
   const Pet(
@@ -17,13 +18,14 @@ class Pet extends Equatable {
       required this.image,
         this.latitude,
         this.longitude,
+        this.time,
       required this.IDUser,
       required this.IDDevice,
       required this.isDelete});
 
   @override
   // TODO: implement props
-  List<Object> get props => [{id}, name, image, {latitude, longitude}, IDUser, IDDevice, isDelete];
+  List<Object> get props => [{id}, name, image, {latitude, longitude, time}, IDUser, IDDevice, isDelete];
 
   @override
   String toString() {
@@ -37,6 +39,7 @@ class Pet extends Equatable {
         image: snap['Image'],
         latitude: snap['Latitude'],
         longitude: snap['Longitude'],
+        time: DateTime.parse(snap['Time'].toDate().toString()),
         IDUser: snap['IDUser'],
         IDDevice: snap['IDDevice'],
         isDelete: snap['IsDelete']);
@@ -51,6 +54,7 @@ class Pet extends Equatable {
       'IDDevice': IDDevice,
       'Longitude': longitude,
       'Latitude': latitude,
+      'Time': Timestamp.fromDate(time!),
       'IsDelete': isDelete,
       'ShareTo': FieldValue.arrayUnion([Owner]),
     };

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:pawwismart/data/model/pet.dart';
 import 'package:pawwismart/data/repositories/base_pet_repository.dart';
 import 'package:pawwismart/data/repositories/storage_repository.dart';
@@ -61,5 +62,12 @@ class PetRepository extends BasePetRepository {
     return _firebaseFirestore.collection('Pet').doc(pet.id).update({
       "IsDelete": true
     });
+  }
+
+  Future<String> GetAddressFromLatLong(double lat, double lng) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng, localeIdentifier: "EN");
+    print(placemarks);
+    Placemark place = placemarks[0];
+    return '${place.street}, ${place.country}';
   }
 }

@@ -53,11 +53,11 @@ dependencies:
   flutter_slidable: ^1.2.0
   flutter_map: ^0.14.0
   latlong2: ^0.8.1
-  vector_map_tiles: ^1.5.0
   vector_tile_renderer: ^2.4.5
   flutter_map_tappable_polyline: ^3.1.0
-  sliding_up_panel: ^2.0.0+1
   flutter_colorpicker: ^1.0.3
+  geocoding: ^2.0.4
+  timeago: ^3.2.2
 
 dev_dependencies:
   flutter_test:

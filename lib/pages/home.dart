@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/pages/flexiableappbar.dart';
 import 'package:pawwismart/pages/createPet.dart';
@@ -14,8 +15,8 @@ import '../data/model/pet.dart';
 import '../data/repositories/device_repository.dart';
 import '../data/repositories/pet_repository.dart';
 import '../data/repositories/share_repository.dart';
-import 'mapFence.dart';
 import 'mapOnePet.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class Home extends StatefulWidget {
   @override
@@ -468,7 +469,7 @@ class _MyHomeState extends State<Home> {
   }
 }
 
-class PetCard extends StatelessWidget {
+class PetCard extends StatefulWidget {
   late Pet pet;
   late int index;
 
@@ -477,7 +478,29 @@ class PetCard extends StatelessWidget {
   }
 
   @override
+  _PetCardState createState() => _PetCardState();
+}
+
+class _PetCardState extends State<PetCard> {
+
+  String _currentAddress = "Loading";
+
+  Future<void> _getAddressFromLatLng() async {
+    await placemarkFromCoordinates(widget.pet.latitude!, widget.pet.longitude!, localeIdentifier: "EN")
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+        '${place.street}, ${place.country}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _getAddressFromLatLng();
     return Card(
       margin: EdgeInsets.fromLTRB(15, 0, 15, 10),
       color: Colors.white,
@@ -494,7 +517,7 @@ class PetCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => MapOnePage(),
               settings: RouteSettings(
-                arguments: index,
+                arguments: widget.index,
               ),
             ),
           );
@@ -512,7 +535,7 @@ class PetCard extends StatelessWidget {
                     Center(
                       child: CircleAvatar(
                         radius: 45.0,
-                        backgroundImage: NetworkImage(pet.image.toString()),
+                        backgroundImage: NetworkImage(widget.pet.image.toString()),
                         backgroundColor: Colors.transparent,
                       ),
                     ),
@@ -532,7 +555,7 @@ class PetCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            child: Text(pet.name,
+                            child: Text(widget.pet.name,
                                 style: TextStyle(
                                   color: Color.fromRGBO(74, 85, 104, 1),
                                   fontSize: 23,
@@ -542,29 +565,29 @@ class PetCard extends StatelessWidget {
                           ),
                           Container(
                               child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            child: Material(
-                              color: Color.fromRGBO(255, 255, 255, 1),
-                              child: InkWell(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: SvgPicture.asset(
-                                      "assets/images/filterBig.svg"),
+                                borderRadius: BorderRadius.circular(30),
+                                child: Material(
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                  child: InkWell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: SvgPicture.asset(
+                                          "assets/images/filterBig.svg"),
+                                    ),
+                                    onTap: () {
+                                      //_deletePet(context, pet);
+                                      //_removeSharePet(context, pet);
+                                    },
+                                  ),
                                 ),
-                                onTap: () {
-                                  //_deletePet(context, pet);
-                                  //_removeSharePet(context, pet);
-                                },
-                              ),
-                            ),
-                          )),
+                              )),
                         ],
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 3, horizontal: 0),
-                      child: Text("111 57 Stockholm 4 mins ago",
+                      child: Text(_currentAddress + " " + timeago.format(widget.pet.time!),
                           style: TextStyle(
                             color: Color.fromRGBO(79, 79, 79, 1),
                             fontSize: 14,
@@ -592,7 +615,7 @@ class PetCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                child: Text("Device ID${pet.IDDevice}",
+                                child: Text("Device ID${widget.pet.IDDevice}",
                                     style: TextStyle(
                                       color: Color.fromRGBO(148, 161, 187, 1),
                                       fontSize: 14,
@@ -644,6 +667,7 @@ class PetCard extends StatelessWidget {
     ); // <== The Card class constructor
   }
 }
+
 
 Future confirmDialog(context, Pet pet) async {
   return showDialog(

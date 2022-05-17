@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -8,8 +9,13 @@ import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/data/repositories/pet_repository.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:maps_toolkit/maps_toolkit.dart' as mt;
 
+import '../bloc/fence/fence_bloc.dart';
+import '../data/model/fence.dart';
 import '../data/model/pet.dart';
+import '../data/repositories/fence_repository.dart';
+import 'mapFence.dart';
 
 class MapOnePage extends StatefulWidget {
   @override
@@ -23,12 +29,14 @@ class _MapOnePage extends State<MapOnePage> {
   double currentZoom = 15.0;
   var index;
   String address = "Searh";
+  List<LatLng> polyline = [];
 
   @override
   void initState() {
     _mapController = MapController();
     //_mapController.move(_mapController.center, currentZoom);
     super.initState();
+    debugPrint("${Color.fromRGBO(67, 86, 23, 1).value}");
   }
 
   Widget build(BuildContext context) {
@@ -39,10 +47,18 @@ class _MapOnePage extends State<MapOnePage> {
         create: (context) => PetBloc(
           petRepository: PetRepository(),
         )..add(LoadPet()),
+    child: RepositoryProvider(
+    create: (context) => FenceRepository(),
+    child: BlocProvider(
+    create: (context) => FenceBloc(
+    fenceRepository: FenceRepository(),
+    )..add(LoadFence(FirebaseAuth.instance.currentUser!.uid)),
         child: BlocBuilder<PetBloc, PetState>(builder: (context, state) {
           if (state is PetLoaded) {
             return Scaffold(
-              body: Stack(
+              body: BlocBuilder<FenceBloc, FenceState>(builder: (context, stateFence) {
+                if (stateFence is FenceLoaded) {
+                  return Stack(
                 children: [
                   FlutterMap(
                     mapController: _mapController,
@@ -63,6 +79,17 @@ class _MapOnePage extends State<MapOnePage> {
                         retinaMode: true,
                         subdomains: ['a', 'b', 'c'],
                       ),
+                          PolygonLayerOptions(
+                              polygons: List<Polygon>.generate(
+                                  stateFence.fence.length, (int index)
+                              {
+                                return Polygon(
+                                points: stateFence.fence.elementAt(index).getLatLng(),
+                                color: stateFence.fence.elementAt(index).color.withOpacity(0.1),
+                                borderStrokeWidth: 6,
+                                borderColor: stateFence.fence.elementAt(index).color,
+                              );}).toList(),
+                          ),
                       MarkerLayerOptions(
                         markers: [
                           Marker(
@@ -323,7 +350,11 @@ class _MapOnePage extends State<MapOnePage> {
                                                     ),
                                                   ),
                                                   onTap: () {
-                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => MapPage(lat: state.pets.elementAt(index).latitude!, lng: state.pets.elementAt(index).longitude!, zoom: _mapController.zoom,),
+                                                    ),
+                                                    );
                                                   },
                                                 ),
                                               ),
@@ -380,7 +411,7 @@ class _MapOnePage extends State<MapOnePage> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                PetCard(pet: state.pets.elementAt(index)),
+                                PetCard(pet: state.pets.elementAt(index), fence: stateFence.fence,),
                               ],
                             ),
                           ),
@@ -389,11 +420,17 @@ class _MapOnePage extends State<MapOnePage> {
                     ),
                   ),
                 ],
-              ),
+              );
+    }
+                return Container();
+    }
+    ),
             );
           }
           return Container();
         }),
+      ),
+    ),
       ),
     );
   }
@@ -401,8 +438,9 @@ class _MapOnePage extends State<MapOnePage> {
 
 class PetCard extends StatefulWidget {
   Pet pet;
+  List<Fence> fence;
 
-  PetCard({required this.pet});
+  PetCard({required this.pet, required this.fence});
 
   @override
   _PetCardState createState() => _PetCardState();
@@ -565,7 +603,7 @@ class _PetCardState extends State<PetCard> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Virtual Fence 5",
+                  Text("Virtual Fence " + widget.fence.length.toString(),
                       style: TextStyle(
                         color: Color.fromRGBO(148, 161, 187, 1),
                         fontSize: 16,
@@ -578,81 +616,24 @@ class _PetCardState extends State<PetCard> {
                   Container(
                     height: 20,
                     width: 230,
-                    child: ListView(
+                    child: ListView.builder(
+                      itemCount: widget.fence.length,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      children: [
-                        Container(
+                      itemBuilder: (context, index){
+                        return Container(
                           padding: EdgeInsets.fromLTRB(10, 3, 10, 0),
+                          margin: EdgeInsets.only(right: 8),
                           decoration: BoxDecoration(
-                              color: Colors.orangeAccent,
+                              color: widget.fence.elementAt(index).color,
                               borderRadius: BorderRadius.circular(12)),
                           child: Text(
-                            "Home",
+                            widget.fence.elementAt(index).name,
                             textAlign: TextAlign.center,
                             style: TextStyle(color: Colors.white),
                           ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 3, 10, 0),
-                          decoration: BoxDecoration(
-                              color: Colors.pink,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            "Park",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 3, 10, 0),
-                          decoration: BoxDecoration(
-                              color: Colors.deepPurpleAccent,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            "Garden",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 3, 10, 0),
-                          decoration: BoxDecoration(
-                              color: Colors.orangeAccent,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            "Home",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10, 3, 10, 0),
-                          decoration: BoxDecoration(
-                              color: Colors.orangeAccent,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            "Home",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                      ],
+                        );
+                      }
                     ),
                   ),
                 ],

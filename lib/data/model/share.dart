@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pawwismart/data/model/pet.dart';
 
 class Share extends Equatable {
   final String id;

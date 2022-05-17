@@ -58,6 +58,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   geocoding: ^2.0.4
   timeago: ^3.2.2
+  maps_toolkit: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+
+import '../bloc/fence/fence_bloc.dart';
+import '../data/model/fence.dart';
+import '../data/repositories/fence_repository.dart';
 
 class MarkerNotifier extends ChangeNotifier {
   bool isSingle = false;
@@ -57,6 +63,11 @@ class MarkerNotifier extends ChangeNotifier {
 }
 
 class MapPage extends StatefulWidget {
+
+  double lat, lng, zoom;
+
+  MapPage({required this.lat, required this.lng, required this.zoom});
+
   @override
   State<StatefulWidget> createState() {
     return _MapPage();
@@ -82,7 +93,15 @@ class _MapPage extends State<MapPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
+    return RepositoryProvider(
+        create: (context) => FenceRepository(),
+        child: BlocProvider(
+        create: (context) => FenceBloc(
+      fenceRepository: FenceRepository(),
+    )..add(LoadFence(FirebaseAuth.instance.currentUser!.uid)),
+    child: BlocBuilder<FenceBloc, FenceState>(builder: (context, state) {
+      if (state is FenceLoaded) {
+        return Scaffold(
       body: Stack(
         children: [
           FlutterMap(
@@ -101,10 +120,10 @@ class _MapPage extends State<MapPage> {
               ],
               onMapCreated: (_con) async {},
               onPositionChanged: (position, isChanged) {},
-              center: LatLng(45.1313258, 5.5171205),
+              center: LatLng(widget.lat, widget.lng),
               interactiveFlags:
                   InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-              zoom: 17.0,
+              zoom: widget.zoom,
               minZoom: 2,
               maxZoom: 17.0,
             ),
@@ -522,11 +541,7 @@ class _MapPage extends State<MapPage> {
                         InkWell(
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent,
-                          onTap: () {
-                            setState(() {
-                              markerNotifier.clearAllMarkers();
-                            });
-                          },
+                          onTap: () => _createFence(context, currentColor, markerNotifier.polyline),
                           child: Container(
                             width: 70.0,
                             height: 70.0,
@@ -559,4 +574,22 @@ class _MapPage extends State<MapPage> {
       ),
     );
   }
+      return Container(
+);
 }
+),
+    ),
+    );
+  }
+}
+
+void _createFence(BuildContext context, Color color, List<LatLng> polyline) {
+  List<double> lat = [], lng = [];
+  for (var marker in polyline) {
+    lat.add(marker.latitude);
+    lng.add(marker.longitude);
+  }
+  Fence fence = Fence(name: "Park", IDUser: FirebaseAuth.instance.currentUser!.uid, color: color, latitude: lat, longitude: lng);
+  BlocProvider.of<FenceBloc>(context).add(AddFence(fence));
+}
+

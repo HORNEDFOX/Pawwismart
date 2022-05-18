@@ -52,9 +52,10 @@ class _MapOnePage extends State<MapOnePage> {
     child: BlocProvider(
     create: (context) => FenceBloc(
     fenceRepository: FenceRepository(),
-    )..add(LoadFence(FirebaseAuth.instance.currentUser!.uid)),
+    ),
         child: BlocBuilder<PetBloc, PetState>(builder: (context, state) {
           if (state is PetLoaded) {
+            BlocProvider.of<FenceBloc>(context).add(LoadFence(FirebaseAuth.instance.currentUser!.uid, state.pets.elementAt(index).id!));
             return Scaffold(
               body: BlocBuilder<FenceBloc, FenceState>(builder: (context, stateFence) {
                 if (stateFence is FenceLoaded) {
@@ -85,7 +86,7 @@ class _MapOnePage extends State<MapOnePage> {
                               {
                                 return Polygon(
                                 points: stateFence.fence.elementAt(index).getLatLng(),
-                                color: stateFence.fence.elementAt(index).color.withOpacity(0.1),
+                                color: stateFence.fence.elementAt(index).color.withOpacity(0.2),
                                 borderStrokeWidth: 6,
                                 borderColor: stateFence.fence.elementAt(index).color,
                               );}).toList(),
@@ -352,7 +353,7 @@ class _MapOnePage extends State<MapOnePage> {
                                                   onTap: () {
                                                     Navigator.push(
                                                       context,
-                                                      MaterialPageRoute(builder: (context) => MapPage(lat: state.pets.elementAt(index).latitude!, lng: state.pets.elementAt(index).longitude!, zoom: _mapController.zoom,),
+                                                      MaterialPageRoute(builder: (context) => MapPage(lat: state.pets.elementAt(index).latitude!, lng: state.pets.elementAt(index).longitude!, zoom: _mapController.zoom, lenghtFence: stateFence.fence.length, pet: state.pets.elementAt(index).id!,),
                                                     ),
                                                     );
                                                   },

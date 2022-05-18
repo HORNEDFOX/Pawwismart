@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pawwismart/data/repositories/storage_repository.dart';
 
 import '../../data/model/fence.dart';
 import '../../data/repositories/fence_repository.dart';
@@ -23,7 +24,7 @@ class FenceBloc extends Bloc<FenceEvent, FenceState> {
 
   void _onLoadFence(LoadFence event, Emitter<FenceState> emit) {
     _fenceSubscription?.cancel();
-    _fenceSubscription = _fenceRepository.getAllFence(event.user).listen(
+    _fenceSubscription = _fenceRepository.getAllFence(event.user, event.pet).listen(
           (fence) => add(UpdateFence(fence),
       ),
     );
@@ -34,6 +35,6 @@ class FenceBloc extends Bloc<FenceEvent, FenceState> {
   }
 
   void _onAddFence(AddFence event, Emitter<FenceState> emit)  {
-    _fenceRepository.createFence(event.fence);
+    _fenceRepository.createFence(event.fence, event.pet);
   }
 }

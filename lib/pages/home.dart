@@ -83,7 +83,7 @@ class _MyHomeState extends State<Home> {
                         floating: false,
                         pinned: true,
                         elevation: 0.0,
-                        backgroundColor: Color.fromRGBO(74, 85, 104, 1),
+                        backgroundColor: Color.fromRGBO(253, 253, 253, 1),//Color.fromRGBO(74, 85, 104, 1),
                       ),
                       SliverAppBar(
                           // <-- app bar for logo
@@ -483,7 +483,7 @@ class PetCard extends StatefulWidget {
 
 class _PetCardState extends State<PetCard> {
 
-  String _currentAddress = "Loading";
+  String _currentAddress = "Not Found";
 
   Future<void> _getAddressFromLatLng() async {
     await placemarkFromCoordinates(widget.pet.latitude!, widget.pet.longitude!, localeIdentifier: "EN")

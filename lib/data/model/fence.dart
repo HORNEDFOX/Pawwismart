@@ -29,7 +29,7 @@ class Fence extends Equatable {
         color,
         name,
         latitude,
-        longitude
+        longitude,
       ];
 
   List<LatLng> getLatLng() {
@@ -59,13 +59,14 @@ class Fence extends Equatable {
     return fence;
   }
 
-  Map<String, dynamic> toMap(String Owner) {
+  Map<String, dynamic> toMap(String Owner, List<dynamic> Pet) {
     return {
       'IDUser': Owner,
       'Name': name,
       'Color': color.value,
       'Latitude': latitude,
       'Longitude': longitude,
+      'Pets':  FieldValue.arrayUnion([...Pet]),
     };
   }
 }

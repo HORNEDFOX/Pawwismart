@@ -485,100 +485,135 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
     showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: const Text('Create Name',
-                style: TextStyle(
-                  color: Color.fromRGBO(74, 85, 104, 1),
-                  fontSize: 23,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.w900,
-                )),
-            content: Form(
-              key: _formKey,
-              child: Container(
-                width: MediaQuery.of(context).size.width / 1.5,
-                child: TextFormField(
-                  keyboardType: TextInputType.text,
-                  controller: _nameController,
-                  obscureText: false,
-                  validator: (name) {
-                    if (isNameValid(name!))
-                      return null;
-                    else
-                      return 'Enter a valid name fence';
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 10.0),
-                    labelText: 'Name Fence',
-                    labelStyle: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Open Sans',
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w400),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(114, 117, 168, 0.5)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(114, 117, 168, 1)),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(251, 76, 31, 1)),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(251, 76, 31, 1)),
-                    ),
-                    errorStyle: const TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Open Sans',
-                        color: Color.fromRGBO(251, 76, 31, 1),
-                        fontWeight: FontWeight.w300),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+          return Dialog(
+            elevation: 0,
+            backgroundColor: Color(0xffffffff),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15),
+                Text("Create Name",
+                  style: TextStyle(
+                    color: Color.fromRGBO(74, 85, 104, 1),
+                    fontSize: 23,
+                    fontFamily: 'Open Sans',
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                minWidth: 50,
-                child: Text('CANCEL',
-                    style: TextStyle(
-                      color: Color.fromRGBO(79, 79, 79, 1),
-                      fontSize: 18,
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w600,
-                    )),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                color: Colors.transparent,
-                textColor: Colors.green,
-                child: Text('SAVE',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w900,
-                    )),
-                onPressed: () {
-                  setState(() {
-                    if (_formKey.currentState!.validate()) {
-                      nameFence = _nameController.text;
+                SizedBox(height: 15),
+                Form(
+                  key: _formKey,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      controller: _nameController,
+                      obscureText: false,
+                      validator: (name) {
+                        if (isNameValid(name!))
+                          return null;
+                        else
+                          return 'Enter a valid name fence';
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        labelText: 'Name Fence',
+                        labelStyle: TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Open Sans',
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w400),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color.fromRGBO(114, 117, 168, 0.5)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color.fromRGBO(114, 117, 168, 1)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color.fromRGBO(251, 76, 31, 1)),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                              color: Color.fromRGBO(251, 76, 31, 1)),
+                        ),
+                        errorStyle: const TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'Open Sans',
+                            color: Color.fromRGBO(251, 76, 31, 1),
+                            fontWeight: FontWeight.w300),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Divider(
+                  height: 1,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  child: InkWell(
+                    highlightColor: Colors.grey[200],
+                    onTap: () {
+                      setState(() {
+                        if (_formKey.currentState!.validate()) {
+                          nameFence = _nameController.text;
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    child: Center(
+                      child: Text(
+                        "Save",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Color.fromRGBO(97, 163, 153, 1),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  child: InkWell(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15.0),
+                      bottomRight: Radius.circular(15.0),
+                    ),
+                    highlightColor: Colors.grey[200],
+                    onTap: () {
                       Navigator.of(context).pop();
-                    }
-                  });
-                },
-              ),
-            ],
+                    },
+                    child: Center(
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         });
   }
@@ -716,12 +751,7 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                                                                 backgroundColor:
                                                                     Colors
                                                                         .transparent,
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .check_circle_rounded,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
+                                                                child: SvgPicture.asset("assets/images/check-circle.svg", color: Colors.white,),
                                                               )))
                                                           : (CircleAvatar(
                                                               radius: 26.0,

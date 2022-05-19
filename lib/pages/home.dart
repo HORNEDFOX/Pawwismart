@@ -585,9 +585,13 @@ class _PetCardState extends State<PetCard> {
                       ),
                     ),
                     Container(
+                      width: MediaQuery.of(context).size.width / 1.75,
                       padding: const EdgeInsets.symmetric(
                           vertical: 3, horizontal: 0),
                       child: Text(_currentAddress + " " + timeago.format(widget.pet.time!),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          maxLines: 1,
                           style: TextStyle(
                             color: Color.fromRGBO(79, 79, 79, 1),
                             fontSize: 14,
@@ -674,50 +678,90 @@ Future confirmDialog(context, Pet pet) async {
     context: context,
     barrierDismissible: true, // user must tap button for close dialog!
     builder: (_) {
-      return AlertDialog(
-        title: Text('Delete ${pet.name}?',
-            style: TextStyle(
-              color: Color.fromRGBO(74, 85, 104, 1),
-              fontSize: 23,
-              fontFamily: 'Open Sans',
-              fontWeight: FontWeight.w900,
-            )),
-        content: Text(
-            'Are you sure you want to delete the pet? This action cannot be undone!',
-            style: TextStyle(
-              color: Color.fromRGBO(79, 79, 79, 1),
-              fontSize: 16,
-              fontFamily: 'Open Sans',
-              fontWeight: FontWeight.w400,
-            )),
-        actions: <Widget>[
-          FlatButton(
-            minWidth: 50,
-            child: Text('CANCEL',
+      return Dialog(
+        elevation: 0,
+        backgroundColor: Color(0xffffffff),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 15),
+            Text('Delete ${pet.name}?',
                 style: TextStyle(
-                  color: Color.fromRGBO(79, 79, 79, 1),
-                  fontSize: 18,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.w600,
-                )),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('DELETE',
-                style: TextStyle(
-                  color: Color.fromRGBO(255, 79, 81, 1),
-                  fontSize: 18,
+                  color: Color.fromRGBO(74, 85, 104, 1),
+                  fontSize: 23,
                   fontFamily: 'Open Sans',
                   fontWeight: FontWeight.w900,
-                )),
-            onPressed: () {
-              _deletePet(context, pet);
-              Navigator.of(context).pop();
-            },
-          )
-        ],
+                )
+            ),
+            SizedBox(height: 15),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: 0.0, horizontal: 20.0),
+              child:
+            Text(
+                'Are you sure you want to delete the pet? This action cannot be undone!',
+                style: TextStyle(
+                  color: Color.fromRGBO(79, 79, 79, 1),
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w400,
+                )),),
+            SizedBox(height: 20),
+            Divider(
+              height: 1,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              child: InkWell(
+                highlightColor: Colors.grey[200],
+                onTap: () {
+                  _deletePet(context, pet);
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+              height: 1,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              child: InkWell(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15.0),
+                  bottomRight: Radius.circular(15.0),
+                ),
+                highlightColor: Colors.grey[200],
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     },
   );

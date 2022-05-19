@@ -12,6 +12,7 @@ mixin InputValidationMixin {
     String pattern =
         r'[a-zA-Z]';
     RegExp regex = new RegExp(pattern);
-    return regex.hasMatch(name);
+    if (name.length >=2 && name.length <= 15) return regex.hasMatch(name);
+    else return false;
   }
 }

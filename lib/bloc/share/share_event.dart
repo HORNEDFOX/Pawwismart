@@ -21,3 +21,21 @@ class UpdateShare extends ShareEvent {
   @override
   List<Object> get props => [share];
 }
+
+class AddShare extends ShareEvent {
+  final Share share;
+
+  const AddShare(this.share);
+
+  @override
+  List<Object> get props => [share];
+}
+
+class DeleteShareFriend extends ShareEvent {
+  final String pet;
+
+  const DeleteShareFriend(this.pet);
+
+  @override
+  List<Object> get props => [pet];
+}

@@ -18,6 +18,8 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
         super(ShareLoading()) {
     on<LoadShare>(_onLoadShare);
     on<UpdateShare>(_onUpdateShare);
+    on<AddShare>(_onAddShare);
+    on<DeleteShareFriend>(_onDeleteShareFriend);
   }
 
   void _onLoadShare(LoadShare event, Emitter<ShareState> emit) {
@@ -30,5 +32,13 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
 
   void _onUpdateShare(UpdateShare event, Emitter<ShareState> emit) {
     emit(ShareLoaded(share: event.share));
+  }
+
+  void _onAddShare(AddShare event, Emitter<ShareState> emit)  {
+    _shareRepository.createShare(event.share);
+  }
+
+  void _onDeleteShareFriend(DeleteShareFriend event, Emitter<ShareState> emit)  {
+    _shareRepository.deleteShareFriend(event.pet);
   }
 }

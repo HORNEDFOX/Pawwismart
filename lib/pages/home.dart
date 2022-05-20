@@ -83,7 +83,7 @@ class _MyHomeState extends State<Home> {
                         floating: false,
                         pinned: true,
                         elevation: 0.0,
-                        backgroundColor: Color.fromRGBO(253, 253, 253, 1),//Color.fromRGBO(74, 85, 104, 1),
+                        backgroundColor: Color.fromRGBO(74, 85, 104, 1),
                       ),
                       SliverAppBar(
                           // <-- app bar for logo
@@ -338,7 +338,7 @@ class _MyHomeState extends State<Home> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            const SharePetPage()),
+                                                            SharePetPage(pet: state.pets.elementAt(index))),
                                                   );
                                                 }
                                               },
@@ -494,7 +494,6 @@ class _PetCardState extends State<PetCard> {
         '${place.street}, ${place.country}';
       });
     }).catchError((e) {
-      debugPrint(e);
     });
   }
 
@@ -781,4 +780,5 @@ void doNothing(BuildContext context) {}
 void _removeSharePet(context, Pet pet) {
   BlocProvider.of<PetBloc>(context)
       .add(RemoveSharePet(pet, FirebaseAuth.instance.currentUser!.uid));
+  BlocProvider.of<ShareBloc>(context).add(DeleteShareFriend(pet.id!));
 }

@@ -13,16 +13,18 @@ import '../data/repositories/share_repository.dart';
 import '../data/repositories/user_repository.dart';
 import 'inputValidationMixin.dart';
 
+List<String> closedEmail = [];
+
 class SharePetPage extends StatelessWidget with InputValidationMixin {
   Pet pet;
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  List<String> closedEmail = [];
 
   SharePetPage({required this.pet});
 
   @override
   Widget build(BuildContext context) {
+    closedEmail.clear();
     return RepositoryProvider(
       create: (context) => UserRepository(),
       child: BlocProvider(
@@ -483,114 +485,224 @@ class ShareCard extends StatelessWidget {
         Container(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-          Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(150, 166, 228, 1),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(148, 161, 187, 0.2),
-                spreadRadius: 1,
-                blurRadius: 8,
+            Container(
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(150, 166, 228, 1),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromRGBO(148, 161, 187, 0.2),
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(share.date!.day.toString(), style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.w900,
+                        ),),
+                        Text('${DateFormat("MMM").format(share.date!)} ${DateFormat("yyy").format(share.date!)}', style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.w600,
+                        ),),
+                      ],
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(share.name,
+                                style: TextStyle(
+                                  color: Color.fromRGBO(74, 85, 104, 1),
+                                  fontSize: 23,
+                                  fontFamily: 'Open Sans',
+                                  fontWeight: FontWeight.w900,
+                                )),
+                          ),
+                          Container(
+                            child: Text(share.email,
+                                style: TextStyle(
+                                  color: Color.fromRGBO(74, 85, 104, 1),
+                                  fontSize: 14,
+                                  fontFamily: 'Open Sans',
+                                  fontWeight: FontWeight.w400,
+                                )),
+                          ),
+                        ],
+                      )
+                  ),
+                ],
+              )
+            ),
+            Container(
+              height: 48,
+              width: MediaQuery.of(context).size.width / 6,
+              child: FlatButton(
+                onPressed: () {
+                  _deleteShareDialog(context);
+                },
+                padding: EdgeInsets.all(0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 0),
+                        Color.fromRGBO(255, 255, 255, 0),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    constraints: BoxConstraints(
+                        minHeight: 30, maxWidth: double.infinity),
+                    child: Text(
+                      "CLOSE",
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(151, 196, 232, 1),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(share.date!.day.toString(), style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontFamily: 'Open Sans',
-                fontWeight: FontWeight.w900,
-              ),),
-              Text('${DateFormat.DAY}', style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontFamily: 'Open Sans',
-                fontWeight: FontWeight.w600,
-              ),),
-            ],
-          ),
-        ),
-        Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Text(share.name,
-                      style: TextStyle(
-                        color: Color.fromRGBO(74, 85, 104, 1),
-                        fontSize: 23,
-                        fontFamily: 'Open Sans',
-                        fontWeight: FontWeight.w900,
-                      )),
-                ),
-                Container(
-                  child: Text(share.email,
-                      style: TextStyle(
-                        color: Color.fromRGBO(74, 85, 104, 1),
-                        fontSize: 14,
-                        fontFamily: 'Open Sans',
-                        fontWeight: FontWeight.w400,
-                      )),
-                ),
-              ],
-            )
-        ),
-        Container(
-            height: 70,
-            width: 200,
-            child: Column(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .center,
-              crossAxisAlignment:
-              CrossAxisAlignment
-                  .center,
-              children: [
-                SvgPicture.asset(
-                  "assets/images/share.svg",
-                  color: Color.fromRGBO(
-                      148, 161, 187, 1),
-                  height: 25,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Text("Close",
-                    style: TextStyle(
-                      color:
-                      Color.fromRGBO(
-                          148,
-                          161,
-                          187,
-                          1),
-                      fontSize: 15,
-                      fontFamily:
-                      'Open Sans',
-                      fontWeight:
-                      FontWeight.w600,
-                    )),
-              ],
-            )),
+            ),
+        ],
       ),
     ),
     ],
     ),
     ),
-    ],
-    ),
-    )
-    ,
-    ); // <== The Card class constructor
+    );// <== The Card class constructor
+  }
+
+  void _deleteShareDialog(context){
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) {
+          return Dialog(
+        elevation: 0,
+        backgroundColor: Color(0xffffffff),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 15),
+            Text(
+              "Delete Share",
+                style: TextStyle(
+                color: Color.fromRGBO(74, 85, 104, 1),
+            fontSize: 23,
+            fontFamily: 'Open Sans',
+            fontWeight: FontWeight.w900,
+          )
+            ),
+            SizedBox(height: 15),
+              BlocProvider(
+              create: (context) =>
+              ShareBloc(
+                shareRepository: ShareRepository(),
+              ), child: Container(
+                margin: const EdgeInsets.symmetric(
+                    vertical: 0.0, horizontal: 20.0),
+                child: Text("Are you sure you want to restrict ${share.name}'s access to the location of the pet?"),
+              ),
+              ),
+            SizedBox(height: 15),
+            Divider(
+              height: 1,
+            ),
+            Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              height: 50,
+              child: InkWell(
+                highlightColor: Colors.grey[200],
+                onTap: () {
+                  BlocProvider.of<ShareBloc>(context).add(DeleteShare(share));
+                  closedEmail.remove(share.email);
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Theme
+                          .of(context)
+                          .primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+              height: 1,
+            ),
+            Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              height: 50,
+              child: InkWell(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15.0),
+                  bottomRight: Radius.circular(15.0),
+                ),
+                highlightColor: Colors.grey[200],
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+          );
+    });
   }
 }

@@ -39,3 +39,12 @@ class DeleteShareFriend extends ShareEvent {
   @override
   List<Object> get props => [pet];
 }
+
+class DeleteShare extends ShareEvent {
+  final Share share;
+
+  const DeleteShare(this.share);
+
+  @override
+  List<Object> get props => [share];
+}

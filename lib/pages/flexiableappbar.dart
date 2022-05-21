@@ -43,7 +43,7 @@ class FlexiableAppBar extends StatelessWidget {
                     ),
                     Container(
                       alignment: Alignment.topLeft,
-                      child: Text('${user.displayName}',
+                      child: Text('${user.displayName?.split(' ')[0][0].toUpperCase()}${user.displayName?.split(' ')[0].substring(1).toLowerCase()}',
                           style: TextStyle(
                             color: Color.fromRGBO(151, 196, 232, 1),
                             fontSize: 30,

@@ -18,6 +18,7 @@ class FenceBloc extends Bloc<FenceEvent, FenceState> {
       : _fenceRepository = fenceRepository,
         super(FenceLoading()) {
     on<LoadFence>(_onLoadFence);
+    on<LoadFences>(_onLoadFences);
     on<UpdateFence>(_onUpdateFence);
     on<AddFence>(_onAddFence);
   }
@@ -25,6 +26,14 @@ class FenceBloc extends Bloc<FenceEvent, FenceState> {
   void _onLoadFence(LoadFence event, Emitter<FenceState> emit) {
     _fenceSubscription?.cancel();
     _fenceSubscription = _fenceRepository.getAllFence(event.user, event.pet).listen(
+          (fence) => add(UpdateFence(fence),
+      ),
+    );
+  }
+
+  void _onLoadFences(LoadFences event, Emitter<FenceState> emit) {
+    _fenceSubscription?.cancel();
+    _fenceSubscription = _fenceRepository.getFences(event.user).listen(
           (fence) => add(UpdateFence(fence),
       ),
     );

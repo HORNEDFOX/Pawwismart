@@ -9,6 +9,12 @@ abstract class PetEvent{
 
 class LoadPet extends PetEvent{}
 
+class LoadPetsFence extends PetEvent{
+  final List<dynamic> pets;
+
+  LoadPetsFence(this.pets);
+}
+
 class CreatingPet extends PetEvent{}
 
 class UpdatePet extends PetEvent{

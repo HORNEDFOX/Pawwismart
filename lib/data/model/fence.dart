@@ -12,6 +12,7 @@ class Fence extends Equatable {
   final String name;
   final List<dynamic> latitude;
   final List<dynamic> longitude;
+  final List<dynamic> ? pets;
 
   const Fence(
       {this.id,
@@ -19,7 +20,8 @@ class Fence extends Equatable {
       required this.color,
       required this.name,
       required this.latitude,
-      required this.longitude});
+      required this.longitude,
+      this.pets});
 
   @override
   // TODO: implement props
@@ -30,6 +32,7 @@ class Fence extends Equatable {
         name,
         latitude,
         longitude,
+    {pets},
       ];
 
   List<LatLng> getLatLng() {
@@ -55,7 +58,8 @@ class Fence extends Equatable {
         color: Color(int.parse(snap['Color'].toString())).withOpacity(1),
         name: snap['Name'],
         longitude: snap['Longitude'],
-        latitude: snap['Latitude']);
+        latitude: snap['Latitude'],
+    pets: snap['Pets']);
     return fence;
   }
 

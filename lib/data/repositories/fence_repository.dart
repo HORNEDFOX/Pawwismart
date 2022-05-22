@@ -16,6 +16,12 @@ class FenceRepository {
     });
   }
 
+  Stream<List<Fence>> getFences(String user) {
+    return _firebaseFirestore.collection("Fence").where("IDUser", isEqualTo: user).snapshots().map((snap) {
+      return snap.docs.map((doc) => Fence.fromSnapshot(doc)).toList();
+    });
+  }
+
   @override
   Future<void> createFence(Fence fence, List<dynamic> pet) async {
     await _firebaseFirestore.collection('Fence').doc(fence.id).set(fence.toMap(FirebaseAuth.instance.currentUser!.uid, pet));

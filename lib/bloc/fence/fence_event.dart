@@ -14,6 +14,12 @@ class LoadFence extends FenceEvent{
   LoadFence(this.user, this.pet);
 }
 
+class LoadFences extends FenceEvent{
+  final String user;
+
+  LoadFences(this.user);
+}
+
 class UpdateFence extends FenceEvent {
   final List<Fence> fence;
 

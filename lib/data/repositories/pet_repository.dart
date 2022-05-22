@@ -18,6 +18,13 @@ class PetRepository extends BasePetRepository {
   }
 
   @override
+  Stream<List<Pet>> getPetsFence(List<dynamic> pet) {
+    return _firebaseFirestore.collection("Pet").where(FieldPath.documentId, whereIn: pet).where("IsDelete", isEqualTo: false).snapshots().map((snap) {
+      return snap.docs.map((doc) => Pet.fromSnapshot(doc)).toList();
+    });
+  }
+
+  @override
   Future<void> createPet(Pet pet) async {
     await _firebaseFirestore.collection('Pet').doc(pet.id).set(pet.toMap(FirebaseAuth.instance.currentUser!.uid));
   }

@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawwismart/pages/settingApp.dart';
 import 'package:pawwismart/pages/slideRightRoute.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:pawwismart/pages/virtualFences.dart';
 
 import '../bloc/bloc/auth_bloc.dart';
 import 'home.dart';
@@ -191,7 +192,18 @@ class FlexiableAppBar extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Row(
+                  child: InkWell(
+                      splashColor: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VirtualFencesPage(),
+                          ),
+                        );
+                        debugPrint('Card tapped.');
+                      },
+                      child: Row(
                     children: [
                       SvgPicture.asset("assets/images/calendarHome.svg"),
                       Column(
@@ -201,7 +213,7 @@ class FlexiableAppBar extends StatelessWidget {
                             width: 110,
                             height: 24,
                             alignment: Alignment.centerLeft,
-                            child: Text('Alerts',
+                            child: Text('Fences',
                                 style: TextStyle(
                                   color: Color.fromRGBO(74, 85, 104, 1),
                                   fontSize: 24,
@@ -215,7 +227,7 @@ class FlexiableAppBar extends StatelessWidget {
                               width: 110,
                               height: 56,
                               alignment: Alignment.centerLeft,
-                              child: Text('View archive of\napp alerts',
+                              child: Text('View archive of\napp fences',
                                   style: TextStyle(
                                     color: Color.fromRGBO(74, 85, 104, 1),
                                     fontSize: 12,
@@ -227,6 +239,7 @@ class FlexiableAppBar extends StatelessWidget {
                         ],
                       ),
                     ],
+                  ),
                   ),
                 ),
               ],

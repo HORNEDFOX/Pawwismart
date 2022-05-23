@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -24,8 +26,8 @@ class ShareRepository {
     });
   }
 
-  Future<void> deleteShareFriend(String pet) async {
-    return _firebaseFirestore.collection("Share").where("IDPet", isEqualTo: pet).where("IsActive", isEqualTo: true).snapshots().forEach((element) {
+  Future<void> deleteShareFriend(String pet, String email) async {
+    return _firebaseFirestore.collection("Share").where("IDPet", isEqualTo: pet).where("Email", isEqualTo: email).snapshots().forEach((element) {
       for (var element in element.docs) {
         _firebaseFirestore.collection('Share').doc(element.id).update({
           "IsActive": false

@@ -780,5 +780,5 @@ void doNothing(BuildContext context) {}
 void _removeSharePet(context, Pet pet) {
   BlocProvider.of<PetBloc>(context)
       .add(RemoveSharePet(pet, FirebaseAuth.instance.currentUser!.uid));
-  BlocProvider.of<ShareBloc>(context).add(DeleteShareFriend(pet.id!));
+  BlocProvider.of<ShareBloc>(context).add(DeleteShareFriend(pet.id!, FirebaseAuth.instance.currentUser!.email!));
 }

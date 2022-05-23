@@ -425,11 +425,6 @@ class _MapOnePage extends State<MapOnePage> {
                                                                       stateFence
                                                                           .fence
                                                                           .length,
-                                                                  pet: state
-                                                                      .pets
-                                                                      .elementAt(
-                                                                          index)
-                                                                      .id!,
                                                                 ),
                                                               ),
                                                             );

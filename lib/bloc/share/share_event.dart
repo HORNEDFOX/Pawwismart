@@ -33,11 +33,12 @@ class AddShare extends ShareEvent {
 
 class DeleteShareFriend extends ShareEvent {
   final String pet;
+  final String email;
 
-  const DeleteShareFriend(this.pet);
+  const DeleteShareFriend(this.pet, this.email);
 
   @override
-  List<Object> get props => [pet];
+  List<Object> get props => [pet, email];
 }
 
 class DeleteShare extends ShareEvent {

@@ -24,6 +24,7 @@ class PetRepository extends BasePetRepository {
     });
   }
 
+
   @override
   Future<void> createPet(Pet pet) async {
     await _firebaseFirestore.collection('Pet').doc(pet.id).set(pet.toMap(FirebaseAuth.instance.currentUser!.uid));

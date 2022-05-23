@@ -41,3 +41,32 @@ class AddFence extends FenceEvent {
   @override
   String toString() => 'Add Fence { record: $fence }';
 }
+
+class AddPetsFence extends FenceEvent {
+  final Fence fence;
+  final List<dynamic> pet;
+
+  const AddPetsFence(this.fence, this.pet);
+
+  @override
+  List<Object> get props => [fence, pet];
+}
+
+class DeletePetsFence extends FenceEvent {
+  final Fence fence;
+  final List<dynamic> pet;
+
+  const DeletePetsFence(this.fence, this.pet);
+
+  @override
+  List<Object> get props => [fence, pet];
+}
+
+class DeleteFence extends FenceEvent{
+  final Fence fence;
+
+  DeleteFence(this.fence);
+
+  @override
+  List<Object> get props => [fence];
+}

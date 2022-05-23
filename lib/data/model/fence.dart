@@ -10,6 +10,7 @@ class Fence extends Equatable {
   final Color color;
   final String IDUser;
   final String name;
+  final bool isDelete;
   final List<dynamic> latitude;
   final List<dynamic> longitude;
   final List<dynamic> ? pets;
@@ -19,6 +20,7 @@ class Fence extends Equatable {
       required this.IDUser,
       required this.color,
       required this.name,
+        required this.isDelete,
       required this.latitude,
       required this.longitude,
       this.pets});
@@ -31,6 +33,7 @@ class Fence extends Equatable {
         color,
         name,
         latitude,
+    isDelete,
         longitude,
     {pets},
       ];
@@ -58,6 +61,7 @@ class Fence extends Equatable {
         color: Color(int.parse(snap['Color'].toString())).withOpacity(1),
         name: snap['Name'],
         longitude: snap['Longitude'],
+        isDelete: snap['IsDelete'],
         latitude: snap['Latitude'],
     pets: snap['Pets']);
     return fence;
@@ -68,6 +72,7 @@ class Fence extends Equatable {
       'IDUser': Owner,
       'Name': name,
       'Color': color.value,
+      'IsDelete': isDelete,
       'Latitude': latitude,
       'Longitude': longitude,
       'Pets':  FieldValue.arrayUnion([...Pet]),

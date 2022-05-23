@@ -40,7 +40,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
   }
 
   void _onDeleteShareFriend(DeleteShareFriend event, Emitter<ShareState> emit)  {
-    _shareRepository.deleteShareFriend(event.pet);
+    _shareRepository.deleteShareFriend(event.pet, event.email);
   }
 
   void _onDeleteShare(DeleteShare event, Emitter<ShareState> emit)  {

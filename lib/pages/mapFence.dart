@@ -67,15 +67,13 @@ class MarkerNotifier extends ChangeNotifier {
 
 class MapPage extends StatefulWidget {
   double lat, lng, zoom;
-  String pet;
   int lenghtFence;
 
   MapPage(
       {required this.lat,
       required this.lng,
       required this.zoom,
-      required this.lenghtFence,
-      required this.pet});
+      required this.lenghtFence,});
 
   @override
   State<StatefulWidget> createState() {
@@ -112,7 +110,7 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
       child: BlocProvider(
         create: (context) => FenceBloc(
           fenceRepository: FenceRepository(),
-        )..add(LoadFence(FirebaseAuth.instance.currentUser!.uid, widget.pet)),
+        )..add(LoadFences(FirebaseAuth.instance.currentUser!.uid)),
         child: BlocBuilder<FenceBloc, FenceState>(builder: (context, state) {
           if (state is FenceLoaded) {
             return Scaffold(
@@ -862,6 +860,7 @@ void _createFence(context, Color color, List<LatLng> polyline, String name,
       IDUser: FirebaseAuth.instance.currentUser!.uid,
       color: color,
       latitude: lat,
+      isDelete: false,
       longitude: lng);
   BlocProvider.of<FenceBloc>(context).add(AddFence(fence, pet));
 }

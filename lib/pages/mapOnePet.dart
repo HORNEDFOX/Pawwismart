@@ -27,6 +27,7 @@ class _MapOnePage extends State<MapOnePage> {
   late MapController _mapController;
   double currentZoom = 15.0;
   var index;
+  List<dynamic> pets = [];
   String address = "Searh";
   List<LatLng> polyline = [];
 
@@ -402,6 +403,7 @@ class _MapOnePage extends State<MapOnePage> {
                                                             ),
                                                           ),
                                                           onTap: () {
+                                                            pets.add(state.pets.elementAt(index).id);
                                                             Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
@@ -427,7 +429,7 @@ class _MapOnePage extends State<MapOnePage> {
                                                                           .length,
                                                                           createNoPets: false,
                                                                           isEdit: false,
-                                                                          pet: state.pets.elementAt(index).id,
+                                                                          pet: pets,
                                                                 ),
                                                               ),
                                                             );

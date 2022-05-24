@@ -235,7 +235,7 @@ class FenceCard extends StatelessWidget {
                                 case 3: Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => MapPage(lat: fence.latitudeCenter, lng: fence.longitudeCenter, zoom: fence.zoom, lenghtFence: 1, createNoPets: true, isEdit: true, latLng: fence.getLatLng(), color: fence.color, nameFence: fence.name,),
+                                      builder: (context) => MapPage(lat: fence.latitudeCenter, lng: fence.longitudeCenter, zoom: fence.zoom, lenghtFence: 1, createNoPets: false, isEdit: true, latLng: fence.getLatLng(), color: fence.color, nameFence: fence.name, pet: fence.pets!, fenceId: fence.id,),
                                     ),);
                                   break;
                                 case 4: return _deleteFenceDialog(context);

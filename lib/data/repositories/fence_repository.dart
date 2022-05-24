@@ -44,4 +44,41 @@ class FenceRepository {
       "IsDelete": true
     });
   }
+
+  Future<void> deleteFenceWithDeletePet(String pet) async {
+    return _firebaseFirestore.collection("Fence").where("Pets", arrayContains: pet).snapshots().forEach((element) {
+      for (var element in element.docs) {
+        _firebaseFirestore.collection('Fence').doc(element.id).update({
+          "Pets": FieldValue.arrayRemove([pet])
+        });
+      }
+    });
+  }
+
+  Future<void> deleteNullFence() async {
+    return _firebaseFirestore.collection("Fence").where("Pets", isEqualTo: []).snapshots().forEach((element) {
+      for (var element in element.docs) {
+        _firebaseFirestore.collection('Fence').doc(element.id).update({
+          "IsDelete": true
+        });
+      }
+    });
+  }
+
+  Future<void> updateFence(Fence fence, String id) async {
+    return _firebaseFirestore
+        .collection('Fence')
+        .doc(id)
+        .update(
+      {
+        'Name': fence.name,
+        'Color': fence.color.value,
+        'Latitude': fence.latitude,
+        'Longitude': fence.longitude,
+        'LatitudeCenter': fence.latitudeCenter,
+        'LongitudeCenter': fence.longitudeCenter,
+        'Zoom': fence.zoom,
+      }
+    );
+  }
 }

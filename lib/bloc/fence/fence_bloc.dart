@@ -24,6 +24,9 @@ class FenceBloc extends Bloc<FenceEvent, FenceState> {
     on<AddPetsFence>(_onAddPetsFence);
     on<DeletePetsFence>(_onDeletePetsFence);
     on<DeleteFence>(_onDeleteFence);
+    on<DeleteFenceWithDeletePet>(_onDeleteFenceWithDeletePet);
+    on<DeleteFenceNull>(_onDeleteFenceNull);
+    on<EditFence>(_onEditFence);
   }
 
   void _onLoadFence(LoadFence event, Emitter<FenceState> emit) {
@@ -60,5 +63,17 @@ class FenceBloc extends Bloc<FenceEvent, FenceState> {
 
   void _onDeleteFence(DeleteFence event, Emitter<FenceState> emit)  {
     _fenceRepository.deleteFence(event.fence);
+  }
+
+  void _onDeleteFenceWithDeletePet(DeleteFenceWithDeletePet event, Emitter<FenceState> emit)  {
+    _fenceRepository.deleteFenceWithDeletePet(event.pet);
+  }
+
+  void _onDeleteFenceNull(DeleteFenceNull event, Emitter<FenceState> emit)  {
+    _fenceRepository.deleteNullFence();
+  }
+
+  void _onEditFence(EditFence event, Emitter<FenceState> emit)  {
+    _fenceRepository.updateFence(event.fence, event.id);
   }
 }

@@ -10,6 +10,7 @@ import 'package:latlong2/latlong.dart';
 import '../bloc/fence/fence_bloc.dart';
 import '../bloc/petBloc/pet_bloc.dart';
 import '../data/model/fence.dart';
+import '../data/model/pet.dart';
 import '../data/repositories/fence_repository.dart';
 import '../data/repositories/pet_repository.dart';
 import 'inputValidationMixin.dart';
@@ -73,7 +74,8 @@ class MapPage extends StatefulWidget {
   List<LatLng> ? latLng;
   Color ? color;
   String ? nameFence;
-  String ? pet;
+  List<dynamic> ? pet;
+  String ? fenceId;
 
   MapPage(
       {required this.lat,
@@ -85,7 +87,8 @@ class MapPage extends StatefulWidget {
       this.latLng,
       this.color,
       this.nameFence,
-      this.pet});
+      this.pet,
+      this.fenceId});
 
   @override
   State<StatefulWidget> createState() {
@@ -687,6 +690,7 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                     highlightColor: Colors.grey[200],
                     onTap: () {
                       if(markerNotifier.markers.length > 2) {
+                        if(!widget.isEdit) {
                           petsSelect.add(widget.pet!);
                           _createFence(
                             context,
@@ -697,6 +701,19 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                             widget.lng,
                             widget.zoom,
                             petsSelect,);
+                        }else {
+                          debugPrint("${widget.pet}");
+                          _editFence(
+                            context,
+                            widget.fenceId!,
+                            currentColor,
+                            markerNotifier.polyline,
+                            nameFence,
+                            widget.lat,
+                            widget.lng,
+                            widget.zoom,
+                            widget.pet!,);
+                        }
                         }
                       Navigator.of(context).pop();
                     },
@@ -997,4 +1014,24 @@ void _createFence(context, Color color, List<LatLng> polyline, String name, doub
       zoom: zoom,
       longitude: lng);
   BlocProvider.of<FenceBloc>(context).add(AddFence(fence, pet));
+}
+
+void _editFence(context, String id, Color color, List<LatLng> polyline, String name, double latCenter, double lngCenter, double zoom,
+    List<dynamic> pet) {
+  List<double> lat = [], lng = [];
+  for (var marker in polyline) {
+    lat.add(marker.latitude);
+    lng.add(marker.longitude);
+  }
+  Fence fence = Fence(
+      name: name,
+      IDUser: FirebaseAuth.instance.currentUser!.uid,
+      color: color,
+      latitude: lat,
+      isDelete: false,
+      longitudeCenter: lngCenter,
+      latitudeCenter: latCenter,
+      zoom: zoom,
+      longitude: lng);
+  BlocProvider.of<FenceBloc>(context).add(EditFence(fence, id));
 }

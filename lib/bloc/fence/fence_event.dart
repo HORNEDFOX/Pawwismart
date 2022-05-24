@@ -70,3 +70,25 @@ class DeleteFence extends FenceEvent{
   @override
   List<Object> get props => [fence];
 }
+
+class DeleteFenceWithDeletePet extends FenceEvent{
+  final String pet;
+
+  DeleteFenceWithDeletePet(this.pet);
+
+  @override
+  List<Object> get props => [pet];
+}
+
+class DeleteFenceNull extends FenceEvent{
+}
+
+class EditFence extends FenceEvent{
+  final Fence fence;
+  final String id;
+
+  EditFence(this.fence, this.id);
+
+  @override
+  List<Object> get props => [fence, id];
+}

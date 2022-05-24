@@ -13,6 +13,9 @@ class Fence extends Equatable {
   final bool isDelete;
   final List<dynamic> latitude;
   final List<dynamic> longitude;
+  final double latitudeCenter;
+  final double longitudeCenter;
+  final double zoom;
   final List<dynamic> ? pets;
 
   const Fence(
@@ -23,6 +26,9 @@ class Fence extends Equatable {
         required this.isDelete,
       required this.latitude,
       required this.longitude,
+        required this.latitudeCenter,
+        required this.longitudeCenter,
+        required this.zoom,
       this.pets});
 
   @override
@@ -35,6 +41,9 @@ class Fence extends Equatable {
         latitude,
     isDelete,
         longitude,
+    longitudeCenter,
+    latitudeCenter,
+    zoom,
     {pets},
       ];
 
@@ -63,6 +72,9 @@ class Fence extends Equatable {
         longitude: snap['Longitude'],
         isDelete: snap['IsDelete'],
         latitude: snap['Latitude'],
+    latitudeCenter: snap['LatitudeCenter'],
+    longitudeCenter: snap['LongitudeCenter'],
+    zoom: snap['Zoom'],
     pets: snap['Pets']);
     return fence;
   }
@@ -75,6 +87,9 @@ class Fence extends Equatable {
       'IsDelete': isDelete,
       'Latitude': latitude,
       'Longitude': longitude,
+      'LatitudeCenter': latitudeCenter,
+      'LongitudeCenter': longitudeCenter,
+      'Zoom': zoom,
       'Pets':  FieldValue.arrayUnion([...Pet]),
     };
   }

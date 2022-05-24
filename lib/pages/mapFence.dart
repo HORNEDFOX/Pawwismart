@@ -68,12 +68,24 @@ class MarkerNotifier extends ChangeNotifier {
 class MapPage extends StatefulWidget {
   double lat, lng, zoom;
   int lenghtFence;
+  bool createNoPets;
+  bool isEdit;
+  List<LatLng> ? latLng;
+  Color ? color;
+  String ? nameFence;
+  String ? pet;
 
   MapPage(
       {required this.lat,
       required this.lng,
       required this.zoom,
-      required this.lenghtFence,});
+      required this.lenghtFence,
+      required this.createNoPets,
+      required this.isEdit,
+      this.latLng,
+      this.color,
+      this.nameFence,
+      this.pet});
 
   @override
   State<StatefulWidget> createState() {
@@ -99,8 +111,17 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
 
   @override
   void initState() {
-    // intialize the controllers
     _mapController = MapController();
+    if(widget.isEdit)
+      {
+        for(int i = 0; i < widget.latLng!.length-1; i++) {
+          markerNotifier.addNewMarker(kLatLang: widget.latLng!.elementAt(i));
+        }
+        currentColor = widget.color!;
+        nameFence = widget.nameFence!;
+        markerNotifier.currentColor = widget.color!;
+
+      }
     super.initState();
   }
 
@@ -428,7 +449,11 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                                   highlightColor: Colors.transparent,
                                   splashColor: Colors.transparent,
                                   onTap: () {
-                                    _choicePetsFence(context);
+                                    if(widget.createNoPets) {
+                                      _choicePetsFence(context);
+                                    }else {
+                                      _createFenceDialog(context);
+                                    }
                                   },
                                   child: Container(
                                     width: 70.0,
@@ -616,6 +641,114 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
         });
   }
 
+  void _createFenceDialog(context){
+    List<dynamic> petsSelect = [];
+
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) {
+          return Dialog(
+            elevation: 0,
+            backgroundColor: Color(0xffffffff),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15),
+                Text(
+                    "Create Fence",
+                    style: TextStyle(
+                      color: Color.fromRGBO(74, 85, 104, 1),
+                      fontSize: 23,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w900,
+                    )
+                ),
+                SizedBox(height: 15),
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 0.0, horizontal: 20.0),
+                  child: Text("Are you sure you want to remove the ${widget.nameFence} fence? This action cannot be undone!"),
+                ),
+                SizedBox(height: 15),
+                Divider(
+                  height: 1,
+                ),
+                Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: 50,
+                  child: InkWell(
+                    highlightColor: Colors.grey[200],
+                    onTap: () {
+                      if(markerNotifier.markers.length > 2) {
+                          petsSelect.add(widget.pet!);
+                          _createFence(
+                            context,
+                            currentColor,
+                            markerNotifier.polyline,
+                            nameFence,
+                            widget.lat,
+                            widget.lng,
+                            widget.zoom,
+                            petsSelect,);
+                        }
+                      Navigator.of(context).pop();
+                    },
+                    child: Center(
+                      child: Text(
+                        "Save",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Theme
+                              .of(context)
+                              .primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: 50,
+                  child: InkWell(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15.0),
+                      bottomRight: Radius.circular(15.0),
+                    ),
+                    highlightColor: Colors.grey[200],
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Center(
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
   void _choicePetsFence(context) {
     List<dynamic> indexSelect = [];
     List<dynamic> petsSelect = [];
@@ -703,66 +836,54 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                                             child: Column(
                                               children: <Widget>[
                                                 Center(
-                                                  child: Container(
-                                                      foregroundDecoration:
-                                                          BoxDecoration(
-                                                        color: indexSelect
-                                                                .contains(index)
-                                                            ? Colors.grey
-                                                            : Colors
-                                                                .transparent,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(200),
-                                                        backgroundBlendMode:
-                                                            BlendMode.color,
-                                                      ),
-                                                      child: indexSelect
-                                                              .contains(index)
-                                                          ? (Container(
-                                                              foregroundDecoration:
-                                                                  BoxDecoration(
-                                                                color: indexSelect
-                                                                        .contains(
-                                                                            index)
-                                                                    ? Colors
-                                                                        .grey
-                                                                    : Colors
-                                                                        .transparent,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            200),
-                                                                backgroundBlendMode:
-                                                                    BlendMode
-                                                                        .color,
+                                                    child: Container(
+                                                        height: 50,
+                                                        width: 50,
+                                                        child: indexSelect
+                                                            .contains(index)
+                                                            ? (SizedBox(
+                                                          height: 50,
+                                                          width: 50,
+                                                          child: Stack(
+                                                            clipBehavior: Clip.none,
+                                                            fit: StackFit.expand,
+                                                            children: [
+                                                              CircleAvatar(
+                                                                backgroundImage:  NetworkImage(state.pets.elementAt(index).image),
                                                               ),
-                                                              child:
-                                                                  CircleAvatar(
-                                                                radius: 26.0,
-                                                                backgroundImage:
-                                                                    NetworkImage(state
-                                                                        .pets
-                                                                        .elementAt(
-                                                                            index)
-                                                                        .image),
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                child: SvgPicture.asset("assets/images/check-circle.svg", color: Colors.white,),
-                                                              )))
-                                                          : (CircleAvatar(
-                                                              radius: 26.0,
-                                                              backgroundImage:
-                                                                  NetworkImage(state
-                                                                      .pets
-                                                                      .elementAt(
-                                                                          index)
-                                                                      .image),
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                            ))),
+                                                              Positioned(
+                                                                  bottom: 0,
+                                                                  right: -5,
+                                                                  width: 22,
+                                                                  height: 22,
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                        color: Color.fromRGBO(97, 163, 153, 1),
+                                                                        borderRadius: BorderRadius.circular(20),
+                                                                        boxShadow: [
+                                                                          BoxShadow(color: Colors.white, spreadRadius: 2),
+                                                                        ]
+                                                                    ),
+                                                                    child: SvgPicture.asset("assets/images/check.svg", color: Colors.white, height: 8,),
+                                                                    alignment: Alignment.center,
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        ))
+                                                            : (SizedBox(
+                                                          height: 50,
+                                                          width: 50,
+                                                          child: Stack(
+                                                            clipBehavior: Clip.none,
+                                                            fit: StackFit.expand,
+                                                            children: [
+                                                              CircleAvatar(
+                                                                backgroundImage:  NetworkImage(state.pets.elementAt(index).image),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                        ))
                                                 ),
                                                 SizedBox(
                                                   height: 5,
@@ -796,9 +917,19 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                         height: 50,
                         child: InkWell(
                           highlightColor: Colors.grey[200],
-                          onTap: () {_createFence(context, currentColor,
-                              markerNotifier.polyline, nameFence, petsSelect);
-                          Navigator.of(context).pop();
+                          onTap: () {
+                            if(markerNotifier.markers.length > 2 && petsSelect.length >= 1) {
+                                _createFence(
+                                  context,
+                                  currentColor,
+                                  markerNotifier.polyline,
+                                  nameFence,
+                                  widget.lat,
+                                  widget.lng,
+                                  widget.zoom,
+                                  petsSelect,);
+                                Navigator.of(context).pop();
+                            }
                               },
                           child: Center(
                             child: Text(
@@ -848,7 +979,7 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
   }
 }
 
-void _createFence(context, Color color, List<LatLng> polyline, String name,
+void _createFence(context, Color color, List<LatLng> polyline, String name, double latCenter, double lngCenter, double zoom,
     List<dynamic> pet) {
   List<double> lat = [], lng = [];
   for (var marker in polyline) {
@@ -861,6 +992,9 @@ void _createFence(context, Color color, List<LatLng> polyline, String name,
       color: color,
       latitude: lat,
       isDelete: false,
+      longitudeCenter: lngCenter,
+      latitudeCenter: latCenter,
+      zoom: zoom,
       longitude: lng);
   BlocProvider.of<FenceBloc>(context).add(AddFence(fence, pet));
 }

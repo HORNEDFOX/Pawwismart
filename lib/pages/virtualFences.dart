@@ -16,6 +16,7 @@ import '../data/repositories/pet_repository.dart';
 
 class VirtualFencesPage extends StatelessWidget {
   int fenceCount = 0;
+
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
@@ -68,7 +69,7 @@ class VirtualFencesPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MapPage(lat: 24.5, lng: 25.3, zoom: 14, lenghtFence: fenceCount),
+                  builder: (context) => MapPage(lat: 24.5, lng: 25.3, zoom: 14, lenghtFence: fenceCount, createNoPets: true,isEdit: false,),
                 ),
               );
             },
@@ -227,8 +228,16 @@ class FenceCard extends StatelessWidget {
                           PopupMenuButton(
                             onSelected: (value) async{
                               switch (value) {
-                                case 1: return _choicePetsFence(context);
-                                case 2: return _deletePetsFence(context);
+                                case 1: if(fence.pets!.length == 1) return _choicePetsFence(context);
+                                        break;
+                                case 2: if(fence.pets!.length != 1) return _deletePetsFence(context);
+                                        break;
+                                case 3: Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MapPage(lat: fence.latitudeCenter, lng: fence.longitudeCenter, zoom: fence.zoom, lenghtFence: 1, createNoPets: true, isEdit: true, latLng: fence.getLatLng(), color: fence.color, nameFence: fence.name,),
+                                    ),);
+                                  break;
                                 case 4: return _deleteFenceDialog(context);
                                 default: throw UnimplementedError();
                               }
@@ -493,64 +502,54 @@ class FenceCard extends StatelessWidget {
                                             child: Column(
                                               children: <Widget>[
                                                 Center(
-                                                  child: Container(
-                                                      foregroundDecoration:
-                                                      BoxDecoration(
-                                                        color: indexSelect
+                                                    child: Container(
+                                                        height: 50,
+                                                        width: 50,
+                                                        child: indexSelect
                                                             .contains(index)
-                                                            ? Colors.grey
-                                                            : Colors
-                                                            .transparent,
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(200),
-                                                        backgroundBlendMode:
-                                                        BlendMode.color,
-                                                      ),
-                                                      child: indexSelect
-                                                          .contains(index)
-                                                          ? (Container(
-                                                          foregroundDecoration:
-                                                          BoxDecoration(
-                                                            color: indexSelect
-                                                                .contains(
-                                                                index)
-                                                                ? Colors
-                                                                .grey
-                                                                : Colors
-                                                                .transparent,
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                200),
-                                                            backgroundBlendMode:
-                                                            BlendMode
-                                                                .color,
+                                                            ? (SizedBox(
+                                                          height: 50,
+                                                          width: 50,
+                                                          child: Stack(
+                                                            clipBehavior: Clip.none,
+                                                            fit: StackFit.expand,
+                                                            children: [
+                                                              CircleAvatar(
+                                                                backgroundImage:  NetworkImage(NotPetsFence.elementAt(index).image),
+                                                              ),
+                                                              Positioned(
+                                                                  bottom: 0,
+                                                                  right: -5,
+                                                                  width: 22,
+                                                                  height: 22,
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                        color: Color.fromRGBO(97, 163, 153, 1),
+                                                                        borderRadius: BorderRadius.circular(20),
+                                                                        boxShadow: [
+                                                                          BoxShadow(color: Colors.white, spreadRadius: 2),
+                                                                        ]
+                                                                    ),
+                                                                    child: SvgPicture.asset("assets/images/check.svg", color: Colors.white, height: 8,),
+                                                                    alignment: Alignment.center,
+                                                                  )),
+                                                            ],
                                                           ),
-                                                          child:
-                                                          CircleAvatar(
-                                                            radius: 26.0,
-                                                            backgroundImage:
-                                                            NetworkImage(NotPetsFence.
-                                                                elementAt(
-                                                                index)
-                                                                .image),
-                                                            backgroundColor:
-                                                            Colors
-                                                                .transparent,
-                                                            child: SvgPicture.asset("assets/images/check-circle.svg", color: Colors.white,),
-                                                          )))
-                                                          : (CircleAvatar(
-                                                        radius: 26.0,
-                                                        backgroundImage:
-                                                        NetworkImage(NotPetsFence
-                                                            .elementAt(
-                                                            index)
-                                                            .image),
-                                                        backgroundColor:
-                                                        Colors
-                                                            .transparent,
-                                                      ))),
+                                                        ))
+                                                            : (SizedBox(
+                                                          height: 50,
+                                                          width: 50,
+                                                          child: Stack(
+                                                            clipBehavior: Clip.none,
+                                                            fit: StackFit.expand,
+                                                            children: [
+                                                              CircleAvatar(
+                                                                backgroundImage:  NetworkImage(NotPetsFence.elementAt(index).image),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                        ))
                                                 ),
                                                 SizedBox(
                                                   height: 5,
@@ -585,8 +584,11 @@ class FenceCard extends StatelessWidget {
                         child: InkWell(
                           highlightColor: Colors.grey[200],
                           onTap: () {
-                            BlocProvider.of<FenceBloc>(context).add(AddPetsFence(fence, petsSelect));
+                          if(petsSelect.length >= 1) {
+                            BlocProvider.of<FenceBloc>(context).add(
+                                AddPetsFence(fence, petsSelect));
                             Navigator.of(context).pop();
+                          }
                           },
                           child: Center(
                             child: Text(
@@ -637,6 +639,7 @@ class FenceCard extends StatelessWidget {
   void _deletePetsFence(context) {
     List<dynamic> indexSelect = [];
     List<dynamic> petsSelect = [];
+    int count = 0;
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -659,7 +662,7 @@ class FenceCard extends StatelessWidget {
                     children: [
                       SizedBox(height: 15),
                       Text(
-                        "Select Pets (" + indexSelect.length.toString() +")",
+                        "Delete Pets (" + indexSelect.length.toString() +")",
                         style: TextStyle(
                           color: Color.fromRGBO(74, 85, 104, 1),
                           fontSize: 23,
@@ -670,6 +673,7 @@ class FenceCard extends StatelessWidget {
                       SizedBox(height: 15),
                       BlocBuilder<PetBloc, PetState>(builder: (context, state) {
                         if (state is PetLoaded) {
+                          count = state.pets.length;
                           return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
@@ -722,65 +726,53 @@ class FenceCard extends StatelessWidget {
                                               children: <Widget>[
                                                 Center(
                                                   child: Container(
-                                                      foregroundDecoration:
-                                                      BoxDecoration(
-                                                        color: indexSelect
-                                                            .contains(index)
-                                                            ? Colors.grey
-                                                            : Colors
-                                                            .transparent,
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(200),
-                                                        backgroundBlendMode:
-                                                        BlendMode.color,
-                                                      ),
+                                                      height: 50,
+                                                      width: 50,
                                                       child: indexSelect
                                                           .contains(index)
-                                                          ? (Container(
-                                                          foregroundDecoration:
-                                                          BoxDecoration(
-                                                            color: indexSelect
-                                                                .contains(
-                                                                index)
-                                                                ? Colors
-                                                                .grey
-                                                                : Colors
-                                                                .transparent,
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                200),
-                                                            backgroundBlendMode:
-                                                            BlendMode
-                                                                .color,
-                                                          ),
-                                                          child:
-                                                          CircleAvatar(
-                                                            radius: 26.0,
-                                                            backgroundImage:
-                                                            NetworkImage(state
-                                                                .pets
-                                                                .elementAt(
-                                                                index)
-                                                                .image),
-                                                            backgroundColor:
-                                                            Colors
-                                                                .transparent,
-                                                            child: SvgPicture.asset("assets/images/check-circle.svg", color: Colors.white,),
-                                                          )))
-                                                          : (CircleAvatar(
-                                                        radius: 26.0,
-                                                        backgroundImage:
-                                                        NetworkImage(state
-                                                            .pets
-                                                            .elementAt(
-                                                            index)
-                                                            .image),
-                                                        backgroundColor:
-                                                        Colors
-                                                            .transparent,
-                                                      ))),
+                                                          ? (SizedBox(
+                                                        height: 50,
+                                                        width: 50,
+                                                        child: Stack(
+                                                          clipBehavior: Clip.none,
+                                                          fit: StackFit.expand,
+                                                          children: [
+                                                            CircleAvatar(
+                                                              backgroundImage:  NetworkImage(state.pets.elementAt(index).image),
+                                                            ),
+                                                            Positioned(
+                                                                bottom: 0,
+                                                                right: -5,
+                                                                width: 22,
+                                                                height: 22,
+                                                                child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    color: Color.fromRGBO(97, 163, 153, 1),
+                                                                    borderRadius: BorderRadius.circular(20),
+                                                                    boxShadow: [
+                                                                      BoxShadow(color: Colors.white, spreadRadius: 2),
+                                                                    ]
+                                                                  ),
+                                                                  child: SvgPicture.asset("assets/images/check.svg", color: Colors.white, height: 8,),
+                                                                  alignment: Alignment.center,
+                                                                )),
+                                                          ],
+                                                        ),
+                                                      ))
+                                                          : (SizedBox(
+                                                        height: 50,
+                                                        width: 50,
+                                                        child: Stack(
+                                                          clipBehavior: Clip.none,
+                                                          fit: StackFit.expand,
+                                                          children: [
+                                                            CircleAvatar(
+                                                              backgroundImage:  NetworkImage(state.pets.elementAt(index).image),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                      ))
                                                 ),
                                                 SizedBox(
                                                   height: 5,
@@ -815,12 +807,15 @@ class FenceCard extends StatelessWidget {
                         child: InkWell(
                           highlightColor: Colors.grey[200],
                           onTap: () {
-                            BlocProvider.of<FenceBloc>(context).add(DeletePetsFence(fence, petsSelect));
-                            Navigator.of(context).pop();
+            if(petsSelect.length >= 1 && petsSelect.length < count) {
+              BlocProvider.of<FenceBloc>(context).add(
+                  DeletePetsFence(fence, petsSelect));
+              Navigator.of(context).pop();
+            }
                           },
                           child: Center(
                             child: Text(
-                              "Save",
+                              "Delete",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: Color.fromRGBO(97, 163, 153, 1),

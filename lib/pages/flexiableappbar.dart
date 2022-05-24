@@ -14,8 +14,6 @@ class FlexiableAppBar extends StatelessWidget {
   final double appBarHeight = 30.0;
   final user = FirebaseAuth.instance.currentUser!;
 
-  FlexiableAppBar();
-
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;

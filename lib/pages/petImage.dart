@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -29,30 +30,40 @@ class _PetImageState extends State<PetImage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (image == null)
-          Icon(
-            Icons.image,
-            size: 80,
-            color: Colors.indigo,
+        SizedBox(
+          height: 112,
+          width: 112,
+          child: Stack(
+            clipBehavior: Clip.none,
+            fit: StackFit.expand,
+            children: [
+              CircleAvatar(
+                backgroundImage: (image == null) ? NetworkImage("https://firebasestorage.googleapis.com/v0/b/pawwismartdev.appspot.com/o/NoImage.png?alt=media&token=7b8ffba3-0983-454b-bb1a-dae30dd0f48f") : NetworkImage(image!),
+                backgroundColor: Color.fromRGBO(151, 196, 232, 1),
+              ),
+              Positioned(
+                  bottom: 0,
+                  right: -8,
+                  width: 38,
+                  height: 38,
+                  child: Container(
+                      alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(151, 196, 232, 1),
+                        borderRadius: BorderRadius.circular(60),
+                        boxShadow: [
+                          BoxShadow(color: Colors.white, spreadRadius: 2),
+                        ]
+                    ),
+                    child: InkWell(
+                      onTap: () => _selectPhoto(),
+                      child: SvgPicture.asset("assets/images/li_camera.svg", color: Colors.white, height: 24,)
+                  )
+                  )
+              ),
+            ],
           ),
-        if (image != null)
-          InkWell(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onTap: () => _selectPhoto(),
-            child: AppRoundImage.url(
-              image!,
-              width: 88,
-              height: 88,
-            ),
-          ),
-        InkWell(
-          onTap: () => _selectPhoto(),
-          child: Padding(
-            padding: EdgeInsets.all(8.8),
-            child: Text(image != null ? 'Change Photo' : 'Select Photo'),
-          ),
-        )
+        ),
       ],
     );
   }
@@ -64,16 +75,15 @@ class _PetImageState extends State<PetImage> {
               builder: (context) => Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   ListTile(
-                      leading: Icon(Icons.camera),
+                      leading: SvgPicture.asset("assets/images/li_camera.svg", color: Color.fromRGBO(74, 85, 104, 1),),
                       title: Text('Camera'),
                       onTap: () {
                         Navigator.of(context).pop();
                         _pickImage(ImageSource.camera);
                       }),
                   ListTile(
-                      leading: Icon(Icons.filter),
+                      leading: SvgPicture.asset("assets/images/li_image.svg", color: Color.fromRGBO(74, 85, 104, 1),),
                       title: Text('Pick a File'),
                       onTap: () {
                         Navigator.of(context).pop();

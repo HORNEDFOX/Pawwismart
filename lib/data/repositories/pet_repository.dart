@@ -52,7 +52,7 @@ class PetRepository extends BasePetRepository {
         .update(pet.toMap(pet.IDUser))
         .then(
           (value) => print('Pet document updated.'),
-        );
+    );
   }
 
   @override

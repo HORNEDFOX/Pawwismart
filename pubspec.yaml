@@ -89,7 +89,6 @@ flutter:
      - assets/images/facebook.svg
      - assets/images/google.svg
      - assets/images/Pawwi.svg
-     - assets/images/avatarDog.jpg
      - assets/images/filterBig.svg
      - assets/images/NSLight.svg
      - assets/images/batteryLight.svg
@@ -98,9 +97,6 @@ flutter:
      - assets/images/petAdd.svg
      - assets/images/mapHome.svg
      - assets/images/calendarHome.svg
-     - assets/images/avatarDog1.jpg
-     - assets/images/avatarDog2.jpg
-     - assets/images/avatarCat.jpg
      - assets/images/signup.svg
      - assets/images/dog.gif
      - assets/images/background.svg
@@ -120,6 +116,8 @@ flutter:
      - assets/images/save_zone.svg
      - assets/images/more-vertical.svg
      - assets/images/check.svg
+     - assets/images/li_camera.svg
+     - assets/images/li_image.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

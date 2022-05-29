@@ -9,6 +9,7 @@ import 'package:pawwismart/pages/virtualFences.dart';
 
 import '../bloc/bloc/auth_bloc.dart';
 import 'home.dart';
+import 'mapManyPets.dart';
 
 class FlexiableAppBar extends StatelessWidget {
   final double appBarHeight = 30.0;
@@ -133,6 +134,17 @@ class FlexiableAppBar extends StatelessWidget {
                       ),
                     ],
                   ),
+              child: InkWell(
+                  splashColor: Colors.white,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MapManyPage(),
+                      ),
+                    );
+                    debugPrint('Card tapped.');
+                  },
                   child: Row(
                     children: [
                       SvgPicture.asset("assets/images/mapHome.svg"),
@@ -170,6 +182,7 @@ class FlexiableAppBar extends StatelessWidget {
                       ),
                     ],
                   ),
+              ),
                 ),
                 Container(
                   width: 174,

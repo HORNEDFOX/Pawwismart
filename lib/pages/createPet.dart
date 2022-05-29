@@ -20,7 +20,7 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  String Image = "";
+  String Image = "https://firebasestorage.googleapis.com/v0/b/pawwismartdev.appspot.com/o/NoImage.png?alt=media&token=7b8ffba3-0983-454b-bb1a-dae30dd0f48f";
 
   @override
   void dispose() {

@@ -97,7 +97,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPage extends State<MapPage> with InputValidationMixin {
-  late MapController _mapController;
+  late MapController mapController;
   late MarkerNotifier markerNotifier = MarkerNotifier();
   late String nameFence = widget.lenghtFence != 0
       ? "Fence " + (widget.lenghtFence + 1).toString()
@@ -114,7 +114,7 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
 
   @override
   void initState() {
-    _mapController = MapController();
+    mapController = MapController();
     if(widget.isEdit)
       {
         for(int i = 0; i < widget.latLng!.length-1; i++) {
@@ -141,7 +141,7 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
               body: Stack(
                 children: [
                   FlutterMap(
-                    mapController: _mapController,
+                    mapController: mapController,
                     options: MapOptions(
                       onTap: (pos, val) {
                         setState(
@@ -645,7 +645,6 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
   }
 
   void _createFenceDialog(context){
-    List<dynamic> petsSelect = [];
 
     showDialog(
         context: context,
@@ -691,16 +690,16 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                     onTap: () {
                       if(markerNotifier.markers.length > 2) {
                         if(!widget.isEdit) {
-                          petsSelect.add(widget.pet!);
+                          debugPrint("${widget.pet}");
                           _createFence(
                             context,
                             currentColor,
                             markerNotifier.polyline,
                             nameFence,
-                            widget.lat,
-                            widget.lng,
-                            widget.zoom,
-                            petsSelect,);
+                            mapController.center.latitude,
+                            mapController.center.longitude,
+                            mapController.zoom,
+                            widget.pet!,);
                         }else {
                           debugPrint("${widget.pet}");
                           _editFence(
@@ -709,10 +708,9 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                             currentColor,
                             markerNotifier.polyline,
                             nameFence,
-                            widget.lat,
-                            widget.lng,
-                            widget.zoom,
-                            widget.pet!,);
+                            mapController.center.latitude,
+                            mapController.center.longitude,
+                            mapController.zoom,);
                         }
                         }
                       Navigator.of(context).pop();
@@ -941,9 +939,9 @@ class _MapPage extends State<MapPage> with InputValidationMixin {
                                   currentColor,
                                   markerNotifier.polyline,
                                   nameFence,
-                                  widget.lat,
-                                  widget.lng,
-                                  widget.zoom,
+                                  mapController.center.latitude,
+                                  mapController.center.longitude,
+                                  mapController.zoom,
                                   petsSelect,);
                                 Navigator.of(context).pop();
                             }
@@ -1016,8 +1014,7 @@ void _createFence(context, Color color, List<LatLng> polyline, String name, doub
   BlocProvider.of<FenceBloc>(context).add(AddFence(fence, pet));
 }
 
-void _editFence(context, String id, Color color, List<LatLng> polyline, String name, double latCenter, double lngCenter, double zoom,
-    List<dynamic> pet) {
+void _editFence(context, String id, Color color, List<LatLng> polyline, String name, double latCenter, double lngCenter, double zoom) {
   List<double> lat = [], lng = [];
   for (var marker in polyline) {
     lat.add(marker.latitude);

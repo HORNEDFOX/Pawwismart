@@ -8,4 +8,6 @@ abstract class BasePetRepository{
   Future<void> deletePet(Pet pet);
   Future<void> sharePet(Pet pet, String User);
   Future<void> removeSharePet(Pet pet, String User);
+  Future<void> updatePetInfo(String id, String name, String image);
+  Future<void> updatePetDevice(String id, String device);
 }

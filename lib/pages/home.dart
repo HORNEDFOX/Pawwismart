@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +8,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:pawwismart/bloc/petBloc/pet_bloc.dart';
 import 'package:pawwismart/pages/createPet.dart';
 import 'package:pawwismart/pages/flexiableappbar.dart';
+import 'package:pawwismart/pages/petImage.dart';
 import 'package:pawwismart/pages/sharePet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -18,6 +20,8 @@ import '../data/repositories/device_repository.dart';
 import '../data/repositories/fence_repository.dart';
 import '../data/repositories/pet_repository.dart';
 import '../data/repositories/share_repository.dart';
+import 'Scanner.dart';
+import 'inputValidationMixin.dart';
 import 'mapOnePet.dart';
 
 class Home extends StatefulWidget {
@@ -527,7 +531,7 @@ class PetCard extends StatefulWidget {
   _PetCardState createState() => _PetCardState();
 }
 
-class _PetCardState extends State<PetCard> {
+class _PetCardState extends State<PetCard> with InputValidationMixin {
   String _currentAddress = "Not Found";
 
   Future<void> _getAddressFromLatLng() async {
@@ -614,8 +618,9 @@ class _PetCardState extends State<PetCard> {
                                   onSelected: (value) async {
                                     switch (value) {
                                       case 1:
-                                        break;
+                                        return editInfoPet(context, widget.pet);
                                       case 2:
+                                        return editDevicePet(context, widget.pet);
                                         break;
                                       case 3:
                                         Navigator.push(
@@ -626,9 +631,9 @@ class _PetCardState extends State<PetCard> {
                                                       pet: widget.pet)),
                                         );
                                         break;
-                                      case 4: return confirmDialog(
-                                          context,
-                                          widget.pet);
+                                      case 4:
+                                        return confirmDialog(
+                                            context, widget.pet);
                                       default:
                                         throw UnimplementedError();
                                     }
@@ -751,6 +756,174 @@ class _PetCardState extends State<PetCard> {
       ),
     ); // <== The Card class constructor
   }
+
+  Future editInfoPet(context, Pet pet) async {
+    final _formKey = GlobalKey<FormState>();
+    final _nameController = TextEditingController();
+    String Image = pet.image;
+
+    return showDialog(
+      context: context,
+      barrierDismissible: true, // user must tap button for close dialog!
+      builder: (_) {
+        _nameController.text = pet.name;
+        return StatefulBuilder(builder: (_, setState) {
+          return Dialog(
+            elevation: 0,
+            backgroundColor: Color(0xffffffff),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15),
+                Text('Edit ${pet.name}',
+                    style: TextStyle(
+                      color: Color.fromRGBO(74, 85, 104, 1),
+                      fontSize: 23,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w900,
+                    )),
+                SizedBox(height: 15),
+                Form(
+                  key: _formKey,
+                  child: Container(
+                      margin:
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                      child: Column(
+                        children: [
+                          Center(
+                            child: PetImage(
+                              imagePet: Image,
+                              onFileChanged: (imageUrl) {
+                                setState(() {
+                                  Image = imageUrl;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              controller: _nameController,
+                              obscureText: false,
+                              validator: (name) {
+                                if (isNameValid(name!))
+                                  return null;
+                                else
+                                  return 'Enter a valid name';
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 15.0, horizontal: 10.0),
+                                labelText: 'Name',
+                                labelStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontFamily: 'Open Sans',
+                                    color: Colors.grey.shade700,
+                                    fontWeight: FontWeight.w400),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color:
+                                          Color.fromRGBO(114, 117, 168, 0.5)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(151, 196, 232, 1)),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(251, 76, 31, 1)),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(251, 76, 31, 1)),
+                                ),
+                                errorStyle: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Open Sans',
+                                    color: Color.fromRGBO(251, 76, 31, 1),
+                                    fontWeight: FontWeight.w300),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.auto,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                ),
+                SizedBox(height: 20),
+                Divider(
+                  height: 1,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  child: InkWell(
+                    highlightColor: Colors.grey[200],
+                    onTap: () {
+                      setState(() {
+                        if (_formKey.currentState!.validate()) {
+                          _editPet(
+                              context, pet.id!, _nameController.text, Image);
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    child: Center(
+                      child: Text(
+                        "Save",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Color.fromRGBO(97, 163, 153, 1),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  child: InkWell(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15.0),
+                      bottomRight: Radius.circular(15.0),
+                    ),
+                    highlightColor: Colors.grey[200],
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Center(
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
 }
 
 Future confirmDialog(context, Pet pet) async {
@@ -845,6 +1018,244 @@ Future confirmDialog(context, Pet pet) async {
   );
 }
 
+void editDevicePet(context, Pet pet) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: true, // user must tap button for close dialog!
+    builder: (BuildContext ctx) {
+      return RepositoryProvider(
+        create: (context) => DeviceRepository(),
+        child: BlocProvider(
+          create: (context) => DeviceBloc(
+            deviceRepository: DeviceRepository(),
+          ),
+          child:RepositoryProvider(
+              create: (context) => PetRepository(),
+              child: BlocProvider(
+              create: (context) => PetBloc(
+            petRepository: PetRepository(),
+      ),
+      child: Builder(
+      builder: (context) {
+        return BlocBuilder<DeviceBloc, DeviceState>(builder: (context, state) {
+          if (state is DeviceLoading) {
+            return Dialog(
+              elevation: 0,
+              backgroundColor: Color(0xffffffff),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 15),
+                  Text('Edit device ${pet.name}',
+                      style: TextStyle(
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                        fontSize: 23,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.w900,
+                      )),
+                  SizedBox(height: 15),
+                  Container(
+                    margin:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                    child: Text(
+                        'Are you sure you want to delete the pet? This action cannot be undone!',
+                        style: TextStyle(
+                          color: Color.fromRGBO(79, 79, 79, 1),
+                          fontSize: 16,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.w400,
+                        )),
+                  ),
+                  SizedBox(height: 20),
+                  Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 50,
+                    child: InkWell(
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        _scanQR(ctx, context);
+                        //Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 50,
+                    child: InkWell(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0),
+                      ),
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (state is DeviceLoaded) {
+            return Dialog(
+              elevation: 0,
+              backgroundColor: Color(0xffffffff),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 15),
+                  Text('Edit Found',
+                      style: TextStyle(
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                        fontSize: 23,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.w900,
+                      )),
+                  SizedBox(height: 15),
+                  Container(
+                    margin:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                    child: Text(
+                        'Are you sure you want to delete the pet? This action cannot be undone!',
+                        style: TextStyle(
+                          color: Color.fromRGBO(79, 79, 79, 1),
+                          fontSize: 16,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.w400,
+                        )),
+                  ),
+                  SizedBox(height: 20),
+                  Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 50,
+                    child: InkWell(
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        BlocProvider.of<DeviceBloc>(context).add(
+                            UpdateIDDevice(pet.IDDevice, false));
+                        BlocProvider.of<DeviceBloc>(context).add(
+                            UpdateIDDevice(state.device.IDDevice, true));
+                        BlocProvider.of<PetBloc>(context).add(
+                            EditPetDevice(pet.id!, state.device.IDDevice));
+                        Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 50,
+                    child: InkWell(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0),
+                      ),
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return Container();
+        });
+      }),
+      ),
+      ),
+      ),
+      );
+    },
+  );
+}
+
+Future _scanQR(ctx, context) async {
+  String _result;
+  final result = await Navigator.push(
+      ctx, MaterialPageRoute(builder: (c) => Scanner()));
+  _result = result;
+  _editPetDevice(context, _result);
+}
+
+void _editPetDevice(context, String code) {
+  BlocProvider.of<DeviceBloc>(context).add(
+    LoadDevice(code),
+  );
+}
+
 void _deletePet(context, Pet pet) {
   BlocProvider.of<FenceBloc>(context).add(DeleteFenceWithDeletePet(pet.id!));
   BlocProvider.of<FenceBloc>(context).add(DeleteFenceNull());
@@ -867,4 +1278,8 @@ void _removeSharePet(context, Pet pet) {
       .add(RemoveSharePet(pet, FirebaseAuth.instance.currentUser!.uid));
   BlocProvider.of<ShareBloc>(context).add(
       DeleteShareFriend(pet.id!, FirebaseAuth.instance.currentUser!.email!));
+}
+
+void _editPet(context, String id, String name, String image) {
+  BlocProvider.of<PetBloc>(context).add(EditPet(id, name, image));
 }

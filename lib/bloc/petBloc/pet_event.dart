@@ -68,3 +68,24 @@ class DeletePet extends PetEvent{
   @override
   List<Object> get props => [pet];
 }
+
+class EditPet extends PetEvent{
+  final String id;
+  final String name;
+  final String image;
+
+  EditPet(this.id, this.name, this.image);
+
+  @override
+  List<Object> get props => [id, name, image];
+}
+
+class EditPetDevice extends PetEvent{
+  final String id;
+  final String device;
+
+  EditPetDevice(this.id, this.device);
+
+  @override
+  List<Object> get props => [id, device];
+}

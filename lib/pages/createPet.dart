@@ -11,6 +11,7 @@ import 'package:pawwismart/pages/inputValidationMixin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../data/repositories/device_repository.dart';
+import 'Scanner.dart';
 
 class ScanScreen extends StatefulWidget {
   @override
@@ -75,7 +76,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                         width: MediaQuery.of(context).size.width / 1.5,
                         child: FlatButton(
                           onPressed: () {
-                            scanQR(context);
+                            _scanQR(context);
                           },
                           padding: EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
@@ -195,6 +196,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                         ),
                         Center(
                           child: PetImage(
+                            imagePet: Image,
                             onFileChanged: (imageUrl)
                                 {
                                   setState(() {
@@ -385,8 +387,8 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                         height: 50,
                         width: MediaQuery.of(context).size.width / 1.5,
                         child: FlatButton(
-                          onPressed: () async {
-                            await scanQR(context);
+                          onPressed: () {
+                            _scanQR(context);
                           },
                           padding: EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
@@ -482,20 +484,11 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
     );
   }
 
-  Future<void> scanQR(context) async {
-    try {
-      FlutterBarcodeScanner.scanBarcode("#2A99CF", "Cancel", true, ScanMode.QR)
-          .then((value) {
-        setState(() {
-          QRCode = value;
-          _pressLoadDevice(context, value);
-        });
-      });
-    } catch (e) {
-      setState(() {
-        QRCode = "Not";
-      });
-    }
+  Future _scanQR(context) async{
+    final _QRCode = await Navigator.push(context, MaterialPageRoute(builder: (c) => Scanner()));
+    QRCode = _QRCode;
+    print(QRCode);
+    _pressLoadDevice(context, QRCode);
   }
 
   void _pressLoadPet(context) {

@@ -12,8 +12,10 @@ import 'appRoundImage.dart';
 
 class PetImage extends StatefulWidget {
   final Function(String image) onFileChanged;
+  final imagePet;
 
   PetImage({
+    required this.imagePet,
     required this.onFileChanged,
   });
 
@@ -38,7 +40,7 @@ class _PetImageState extends State<PetImage> {
             fit: StackFit.expand,
             children: [
               CircleAvatar(
-                backgroundImage: (image == null) ? NetworkImage("https://firebasestorage.googleapis.com/v0/b/pawwismartdev.appspot.com/o/NoImage.png?alt=media&token=7b8ffba3-0983-454b-bb1a-dae30dd0f48f") : NetworkImage(image!),
+                backgroundImage: (image == null) ? NetworkImage(widget.imagePet) : NetworkImage(image!),
                 backgroundColor: Color.fromRGBO(151, 196, 232, 1),
               ),
               Positioned(

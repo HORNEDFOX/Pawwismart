@@ -56,6 +56,14 @@ class PetRepository extends BasePetRepository {
   }
 
   @override
+  Future<void> updatePetInfo(String id, String name, String image) async {
+    return _firebaseFirestore.collection('Pet').doc(id).update({
+      "Name": name,
+      "Image": image,
+    });
+  }
+
+  @override
   Future<void> updatePetPictures(Pet pet, String imageName) async {
     String downloadUrl = await StorageRepository().getDownloadURL(pet, imageName);
 
@@ -68,6 +76,13 @@ class PetRepository extends BasePetRepository {
   Future<void> deletePet(Pet pet) async {
     return _firebaseFirestore.collection('Pet').doc(pet.id).update({
       "IsDelete": true
+    });
+  }
+
+  @override
+  Future<void> updatePetDevice(String id, String device) async {
+    return _firebaseFirestore.collection('Pet').doc(id).update({
+      "IDDevice": device,
     });
   }
 }

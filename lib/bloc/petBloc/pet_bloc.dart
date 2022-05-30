@@ -23,7 +23,9 @@ class PetBloc extends Bloc<PetEvent, PetState> {
     on<AddPet>(_onAddPet);
     on<CreatingPet>(_onCreatingPet);
     on<SharePet>(_onSharePet);
+    on<EditPet>(_onEditPet);
     on<RemoveSharePet>(_onRemoveSharePet);
+    on<EditPetDevice>(_onEditPetDevice);
   }
 
   void _onLoadPets(LoadPet event, Emitter<PetState> emit) {
@@ -54,6 +56,10 @@ class PetBloc extends Bloc<PetEvent, PetState> {
     _petRepository.createPet(event.pet);
   }
 
+  void _onEditPet(EditPet event, Emitter<PetState> emit)  {
+    _petRepository.updatePetInfo(event.id, event.name, event.image);
+  }
+
   void _onCreatingPet(CreatingPet event, Emitter<PetState> emit) {
     emit(PetCreating());
   }
@@ -64,5 +70,9 @@ class PetBloc extends Bloc<PetEvent, PetState> {
 
   void _onRemoveSharePet(RemoveSharePet event, Emitter<PetState> emit) {
     _petRepository.removeSharePet(event.pet, event.User);
+  }
+
+  void _onEditPetDevice(EditPetDevice event, Emitter<PetState> emit) {
+    _petRepository.updatePetDevice(event.id, event.device);
   }
 }

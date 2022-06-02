@@ -95,7 +95,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       if (isNameValid(name!))
                         return null;
                       else
-                        return 'Enter a valid name';
+                        return 'Enter correct name';
                     },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -119,17 +119,17 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       errorStyle: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Open Sans',
-                          color: Color.fromRGBO(251, 76, 31, 1),
+                          color: Color.fromRGBO(255, 77, 120, 1),
                           fontWeight: FontWeight.w300),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                     ),
@@ -151,7 +151,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       if (isEmailValid(email!))
                         return null;
                       else
-                        return 'Enter a valid email';
+                        return 'Enter correct email';
                     },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -175,17 +175,17 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       errorStyle: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Open Sans',
-                          color: Color.fromRGBO(251, 76, 31, 1),
+                          color: Color.fromRGBO(255, 77, 120, 1),
                           fontWeight: FontWeight.w300),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                     ),
@@ -207,7 +207,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       if (isPasswordValid(password!))
                         return null;
                       else
-                        return 'Enter a valid password';
+                        return 'Enter correct password';
                     },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -231,17 +231,17 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       errorStyle: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Open Sans',
-                          color: Color.fromRGBO(251, 76, 31, 1),
+                          color: Color.fromRGBO(255, 77, 120, 1),
                           fontWeight: FontWeight.w300),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                     ),
@@ -263,7 +263,7 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       if (repeatPassword == _passwordController.text)
                         return null;
                       else
-                        return 'Enter a valid password';
+                        return 'Enter correct password';
                     },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -287,17 +287,17 @@ class _SignUpState extends State<SignUp> with InputValidationMixin {
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                        BorderSide(color: Color.fromRGBO(251, 76, 31, 1)),
+                        BorderSide(color: Color.fromRGBO(255, 77, 120, 1),),
                       ),
                       errorStyle: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Open Sans',
-                          color: Color.fromRGBO(251, 76, 31, 1),
+                          color: Color.fromRGBO(255, 77, 120, 1),
                           fontWeight: FontWeight.w300),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                     ),

@@ -1,14 +1,13 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart' as storage;
+import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:path/path.dart' as p;
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:path_provider/path_provider.dart';
-
-import 'appRoundImage.dart';
 
 class PetImage extends StatefulWidget {
   final Function(String image) onFileChanged;
@@ -40,28 +39,33 @@ class _PetImageState extends State<PetImage> {
             fit: StackFit.expand,
             children: [
               CircleAvatar(
-                backgroundImage: (image == null) ? NetworkImage(widget.imagePet) : NetworkImage(image!),
+                backgroundImage: (image == null)
+                    ? NetworkImage(widget.imagePet)
+                    : NetworkImage(image!),
                 backgroundColor: Color.fromRGBO(151, 196, 232, 1),
               ),
               Positioned(
-                  bottom: 0,
-                  right: -8,
-                  width: 38,
-                  height: 38,
-                  child: Container(
-                      alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(151, 196, 232, 1),
-                        borderRadius: BorderRadius.circular(60),
-                        boxShadow: [
-                          BoxShadow(color: Colors.white, spreadRadius: 2),
-                        ]
+                bottom: 0,
+                right: -8,
+                width: 38,
+                height: 38,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(151, 196, 232, 1),
+                      borderRadius: BorderRadius.circular(60),
+                      boxShadow: [
+                        BoxShadow(color: Colors.white, spreadRadius: 2),
+                      ]),
+                  child: InkWell(
+                    onTap: () => _selectPhoto(),
+                    child: SvgPicture.asset(
+                      "assets/images/li_camera.svg",
+                      color: Colors.white,
+                      height: 24,
                     ),
-                    child: InkWell(
-                      onTap: () => _selectPhoto(),
-                      child: SvgPicture.asset("assets/images/li_camera.svg", color: Colors.white, height: 24,)
-                  )
-                  )
+                  ),
+                ),
               ),
             ],
           ),
@@ -78,14 +82,20 @@ class _PetImageState extends State<PetImage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                      leading: SvgPicture.asset("assets/images/li_camera.svg", color: Color.fromRGBO(74, 85, 104, 1),),
+                      leading: SvgPicture.asset(
+                        "assets/images/li_camera.svg",
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                      ),
                       title: Text('Camera'),
                       onTap: () {
                         Navigator.of(context).pop();
                         _pickImage(ImageSource.camera);
                       }),
                   ListTile(
-                      leading: SvgPicture.asset("assets/images/li_image.svg", color: Color.fromRGBO(74, 85, 104, 1),),
+                      leading: SvgPicture.asset(
+                        "assets/images/li_image.svg",
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                      ),
                       title: Text('Pick a File'),
                       onTap: () {
                         Navigator.of(context).pop();
@@ -97,16 +107,18 @@ class _PetImageState extends State<PetImage> {
             ));
   }
 
-  Future _pickImage(ImageSource source) async{
-    final pickedFile = await _picker.pickImage(source: source, imageQuality: 50);
-    if (pickedFile == null)
-      {
-        return;
-      }
+  Future _pickImage(ImageSource source) async {
+    final pickedFile =
+        await _picker.pickImage(source: source, imageQuality: 50);
+    if (pickedFile == null) {
+      return;
+    }
 
-    var file = await ImageCropper().cropImage(sourcePath: pickedFile.path, aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1));
+    var file = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1));
 
-    if(file == null){
+    if (file == null) {
       return;
     }
 
@@ -115,8 +127,9 @@ class _PetImageState extends State<PetImage> {
     await _uploadFile(file.path);
   }
 
-  Future<File> compressImage(String path, int quality) async{
-    final newPath = p.join((await getTemporaryDirectory()).path, '${DateTime.now}.${p.extension(path)}');
+  Future<File> compressImage(String path, int quality) async {
+    final newPath = p.join((await getTemporaryDirectory()).path,
+        '${DateTime.now}.${p.extension(path)}');
 
     final result = await FlutterImageCompress.compressAndGetFile(
       path,
@@ -128,7 +141,8 @@ class _PetImageState extends State<PetImage> {
   }
 
   Future _uploadFile(String path) async {
-    final ref = storage.FirebaseStorage.instance.ref()
+    final ref = storage.FirebaseStorage.instance
+        .ref()
         .child('${DateTime.now().toIso8601String() + p.basename(path)}');
 
     final result = await ref.putFile(File(path));

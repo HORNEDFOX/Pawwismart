@@ -65,7 +65,7 @@ class _LogInState extends State<LogIn> with InputValidationMixin {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Don't have an account? Create your\naccount, it takes less than a minute",
+                        "Welcome back!\nSign in to your PawwiSmart account", textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'Open Sans',
@@ -85,7 +85,7 @@ class _LogInState extends State<LogIn> with InputValidationMixin {
                             if (isEmailValid(email!))
                               return null;
                             else
-                              return 'Enter a valid email';
+                              return 'Enter correct email';
                           },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
@@ -109,17 +109,17 @@ class _LogInState extends State<LogIn> with InputValidationMixin {
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Color.fromRGBO(251, 76, 31, 1)),
+                                  color: Color.fromRGBO(255, 77, 120, 1),),
                             ),
                             focusedErrorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Color.fromRGBO(251, 76, 31, 1)),
+                                  color: Color.fromRGBO(255, 77, 120, 1),),
                             ),
                             errorStyle: TextStyle(
                                 fontSize: 12,
                                 fontFamily: 'Open Sans',
-                                color: Color.fromRGBO(251, 76, 31, 1),
+                                color: Color.fromRGBO(255, 77, 120, 1),
                                 fontWeight: FontWeight.w300),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
@@ -138,7 +138,7 @@ class _LogInState extends State<LogIn> with InputValidationMixin {
                             if (isPasswordValid(password!))
                               return null;
                             else
-                              return 'Enter a valid password';
+                              return 'Enter correct password';
                           },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
@@ -162,17 +162,17 @@ class _LogInState extends State<LogIn> with InputValidationMixin {
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Color.fromRGBO(251, 76, 31, 1)),
+                                  color: Color.fromRGBO(255, 77, 120, 1),),
                             ),
                             focusedErrorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: Color.fromRGBO(251, 76, 31, 1)),
+                                  color: Color.fromRGBO(255, 77, 120, 1),),
                             ),
                             errorStyle: TextStyle(
                                 fontSize: 12,
                                 fontFamily: 'Open Sans',
-                                color: Color.fromRGBO(251, 76, 31, 1),
+                                color: Color.fromRGBO(255, 77, 120, 1),
                                 fontWeight: FontWeight.w300),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),

@@ -218,7 +218,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                               if (isNameValid(name!))
                                 return null;
                               else
-                                return 'Enter a valid name';
+                                return 'Enter correct name';
                             },
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
@@ -232,7 +232,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(
-                                    color: Color.fromRGBO(114, 117, 168, 0.5)),
+                                    color: Color.fromRGBO(74, 85, 104, 0.3),),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -242,17 +242,17 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(
-                                    color: Color.fromRGBO(251, 76, 31, 1)),
+                                    color: Color.fromRGBO(255, 77, 120, 1),),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(
-                                    color: Color.fromRGBO(251, 76, 31, 1)),
+                                    color: Color.fromRGBO(255, 77, 120, 1),),
                               ),
                               errorStyle: TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'Open Sans',
-                                  color: Color.fromRGBO(251, 76, 31, 1),
+                                  color: Color.fromRGBO(255, 77, 120, 1),
                                   fontWeight: FontWeight.w300),
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
                             ),
@@ -505,7 +505,7 @@ class _ScanScreenState extends State<ScanScreen> with InputValidationMixin {
 
   void _createPet(BuildContext context, Device device) {
     if (_formKey.currentState!.validate()) {
-      Pet pet = Pet(name: _nameController.text, image: Image.toString(), time: DateTime.now(), IDUser: FirebaseAuth.instance.currentUser!.uid, IDDevice: QRCode, isDelete: false, latitude: 0.0, longitude: 0.0);
+      Pet pet = Pet(name: _nameController.text, image: Image.toString(), time: DateTime.now(), IDUser: FirebaseAuth.instance.currentUser!.uid, IDDevice: QRCode, isDelete: false, latitude: 0.0, longitude: 0.0, charging: 0, connection: 0);
       BlocProvider.of<PetBloc>(context).add(AddPet(pet));
       BlocProvider.of<DeviceBloc>(context).add(UpdateIDDevice(device.IDDevice, true));
     }

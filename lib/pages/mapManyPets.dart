@@ -23,8 +23,9 @@ class MapManyPage extends StatefulWidget {
   }
 }
 
-class _MapManyPage extends State<MapManyPage> {
+class _MapManyPage extends State<MapManyPage> with TickerProviderStateMixin{
   late MapController _mapController;
+  late AnimationController _controller;
   double currentZoom = 15.0;
   List<dynamic> pets = [];
   int index = 0;
@@ -40,7 +41,53 @@ class _MapManyPage extends State<MapManyPage> {
   @override
   void initState() {
     _mapController = MapController();
+    _controller = AnimationController(
+      vsync: this,
+      lowerBound: 0.5,
+      duration: Duration(seconds: 2),
+    )..repeat();
     super.initState();
+  }
+
+  Widget _buildBody(String name) {
+    return AnimatedBuilder(
+      animation: CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
+      builder: (context, child) {
+        return Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            _buildContainer(20 * _controller.value, 1),
+            _buildContainer(40 * _controller.value, 2),
+            _buildContainer(60 * _controller.value, 3),
+            Positioned(
+              top: 90,
+              child: Container(
+                child: Text(name,
+                    style: TextStyle(
+                      color: Color.fromRGBO(
+                          74, 85, 104, 1),
+                      letterSpacing: 0.2,
+                      fontSize: 18,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w500,
+                    )),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildContainer(double radius, int circle) {
+    return Container(
+      width: radius,
+      height: radius,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: circle == 1 ? Color.fromRGBO(151, 196, 232, 1).withOpacity(1 - _controller.value/1.5) : Color.fromRGBO(151, 196, 232, 1).withOpacity(1 - _controller.value),
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -108,32 +155,12 @@ class _MapManyPage extends State<MapManyPage> {
                                 markers: List<Marker>.generate(
                                     state.pets.length, (int index) {
                                   return Marker(
-                                    width: 180,
-                                    height: 80.0,
+                                    width: 150,
+                                    height: 150,
                                     point: LatLng(
                                         state.pets.elementAt(index).latitude!,
                                         state.pets.elementAt(index).longitude!),
-                                    builder: (ctx) => Container(
-                                        //padding: EdgeInsets.fromLTRB(15, 20, 15, 10),
-                                        child: Column(
-                                      children: [
-                                        SvgPicture.asset(
-                                            "assets/images/map.svg"),
-                                        SizedBox(
-                                          height: 3,
-                                        ),
-                                        Text(
-                                            "${state.pets.elementAt(index).name}",
-                                            style: TextStyle(
-                                              color: Color.fromRGBO(
-                                                  74, 85, 104, 1),
-                                              letterSpacing: 0.2,
-                                              fontSize: 18,
-                                              fontFamily: 'Open Sans',
-                                              fontWeight: FontWeight.w500,
-                                            )),
-                                      ],
-                                    )),
+                                    builder: (ctx) => _buildBody(state.pets.elementAt(index).name),
                                   );
                                 }).toList(),
                               ),
@@ -547,8 +574,10 @@ class _MapManyPage extends State<MapManyPage> {
                                                                   ),
                                                                 ),
                                                                 onTap: () {
-                                                                  Navigator.pop(
-                                                                      context);
+                                                                  setState(() {
+                                                                    _mapController.move(LatLng(state.pets.elementAt(index).latitude!,
+                                                                        state.pets.elementAt(index).longitude!), _mapController.zoom);
+                                                                  });
                                                                 },
                                                               ),
                                                             ),
@@ -658,11 +687,11 @@ class _PetCardState extends State<PetCard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SvgPicture.asset("assets/images/batteryLight.svg"),
+                            SvgPicture.asset(widget.pet.imageBattery()),
                             SizedBox(
                               height: 3,
                             ),
-                            Text("50%"),
+                            Text("${widget.pet.charging}%"),
                           ],
                         ),
                       ),
@@ -693,11 +722,11 @@ class _PetCardState extends State<PetCard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SvgPicture.asset("assets/images/NSLight.svg"),
+                            SvgPicture.asset(widget.pet.imageConnection()),
                             SizedBox(
                               height: 3,
                             ),
-                            Text("100%"),
+                            Text("${widget.pet.connection}%"),
                           ],
                         ),
                       ),

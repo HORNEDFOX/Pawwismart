@@ -155,7 +155,7 @@ class SharePetPage extends StatelessWidget with InputValidationMixin {
                                     if (isEmailValid(email!))
                                       return null;
                                     else
-                                      return 'Enter a valid email address';
+                                      return 'Enter correct email';
                                   },
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(
@@ -169,31 +169,29 @@ class SharePetPage extends StatelessWidget with InputValidationMixin {
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
-                                          color: Color.fromRGBO(
-                                              114, 117, 168, 0.5)),
+                                          color: Color.fromRGBO(74, 85, 104, 0.3),),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
-                                          color: Color.fromRGBO(
-                                              114, 117, 168, 1)),
+                                          color: Color.fromRGBO(151, 196, 232, 1),),
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
                                           color: Color.fromRGBO(
-                                              251, 76, 31, 1)),
+                                              255, 77, 120, 1)),
                                     ),
                                     focusedErrorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
                                           color: Color.fromRGBO(
-                                              251, 76, 31, 1)),
+                                              255, 77, 120, 1)),
                                     ),
                                     errorStyle: const TextStyle(
                                         fontSize: 12,
                                         fontFamily: 'Open Sans',
-                                        color: Color.fromRGBO(251, 76, 31, 1),
+                                        color: Color.fromRGBO(255, 77, 120, 1),
                                         fontWeight: FontWeight.w300),
                                     floatingLabelBehavior: FloatingLabelBehavior
                                         .auto,
@@ -440,7 +438,7 @@ class PetCard extends StatelessWidget {
                   ),
                   Container(
                     child: Text(
-                        "Share pet ${pet.name}'s contacts with your friends",
+                        "Share your pet's contact info with your friends and family",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -621,7 +619,7 @@ class ShareCard extends StatelessWidget {
           children: [
             SizedBox(height: 15),
             Text(
-              "Delete Share",
+              "Stop Sharing",
                 style: TextStyle(
                 color: Color.fromRGBO(74, 85, 104, 1),
             fontSize: 23,
@@ -637,7 +635,7 @@ class ShareCard extends StatelessWidget {
               ), child: Container(
                 margin: const EdgeInsets.symmetric(
                     vertical: 0.0, horizontal: 20.0),
-                child: Text("Are you sure you want to restrict ${share.name}'s access to the location of the pet?"),
+                child: Text("Are you sure you want to stop sharing your pet's location with ${share.name}? You can't undo this action."),
               ),
               ),
             SizedBox(height: 15),
@@ -659,12 +657,10 @@ class ShareCard extends StatelessWidget {
                 },
                 child: Center(
                   child: Text(
-                    "Delete",
+                    "Stop Sharing",
                     style: TextStyle(
                       fontSize: 18.0,
-                      color: Theme
-                          .of(context)
-                          .primaryColor,
+                      color: Color.fromRGBO(255, 77, 120, 1),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

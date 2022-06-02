@@ -11,6 +11,7 @@ import 'package:pawwismart/pages/flexiableappbar.dart';
 import 'package:pawwismart/pages/petImage.dart';
 import 'package:pawwismart/pages/sharePet.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:share_plus/share_plus.dart';
 
 import '../bloc/device/device_bloc.dart';
 import '../bloc/fence/fence_bloc.dart';
@@ -31,6 +32,7 @@ class Home extends StatefulWidget {
 
 class _MyHomeState extends State<Home> {
   var top = 0.0;
+  int petCount = 0;
 
   late ScrollController _scrollController;
 
@@ -216,6 +218,7 @@ class _MyHomeState extends State<Home> {
                               BlocBuilder<PetBloc, PetState>(
                                   builder: (context, state) {
                                 if (state is PetLoaded) {
+                                  petCount = state.pets.length;
                                   return SliverList(
                                     delegate: SliverChildBuilderDelegate(
                                       (buildContext, index) {
@@ -284,10 +287,7 @@ class _MyHomeState extends State<Home> {
                                                                         .uid
                                                                 ? Color
                                                                     .fromRGBO(
-                                                                        255,
-                                                                        79,
-                                                                        81,
-                                                                        1)
+                                                                255, 77, 120, 1)
                                                                 : Color
                                                                     .fromRGBO(
                                                                         148,
@@ -311,10 +311,7 @@ class _MyHomeState extends State<Home> {
                                                                             .uid
                                                                     ? Color
                                                                         .fromRGBO(
-                                                                            255,
-                                                                            79,
-                                                                            81,
-                                                                            1)
+                                                                    255, 77, 120, 1)
                                                                     : Color
                                                                         .fromRGBO(
                                                                             148,
@@ -460,8 +457,11 @@ class _MyHomeState extends State<Home> {
                                   return SliverList(
                                     delegate: SliverChildListDelegate(
                                       [
+                                        Expanded(
+                                          child:
                                         Center(
                                           child: CircularProgressIndicator(),
+                                        ),
                                         ),
                                       ],
                                     ),
@@ -632,6 +632,9 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                                         );
                                         break;
                                       case 4:
+                                        Share.share('Hello, friend!\nMy pet ${widget.pet.name} is now here: https://www.google.com/maps/search/?api=1&query=${widget.pet.latitude},${widget.pet.longitude}\n\nThis message was sent via the PawwiSmart app');
+                                        break;
+                                      case 5:
                                         return confirmDialog(
                                             context, widget.pet);
                                       default:
@@ -653,14 +656,20 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                                           value: 2,
                                           onTap: () {},
                                         ),
+
                                         PopupMenuItem(
-                                          child: Text("Share"),
+                                          child: Text("Share Friend"),
                                           value: 3,
                                           onTap: () {},
                                         ),
+                                    PopupMenuItem(
+                                      child: Text("Share Social"),
+                                      value: 4,
+                                      onTap: () {},
+                                    ),
                                         PopupMenuItem(
-                                          child: Text("Delete"),
-                                          value: 4,
+                                          child: Text("Delete", style: TextStyle(color: Color.fromRGBO(255, 77, 120, 1),),),
+                                          value: 5,
                                           onTap: () {},
                                         ),
                                       ])),
@@ -719,22 +728,21 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                             width: MediaQuery.of(context).size.width * 0.07,
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 0, horizontal: 6),
-                                child: SvgPicture.asset(
-                                    "assets/images/NSLight.svg"),
+                                child: SvgPicture.asset(widget.pet.imageConnection()),
                               ),
                               Container(
                                 padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),
                                 child: SvgPicture.asset(
-                                    "assets/images/batteryLight.svg"),
+                                    widget.pet.imageBattery()),
                               ),
                               Container(
-                                child: Text("50%",
+                                child: Text("${widget.pet.charging}%",
                                     style: TextStyle(
                                       color: Color.fromRGBO(148, 161, 187, 1),
                                       fontSize: 14,
@@ -816,7 +824,7 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                                 if (isNameValid(name!))
                                   return null;
                                 else
-                                  return 'Enter a valid name';
+                                  return 'Enter correct name';
                               },
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.symmetric(
@@ -831,7 +839,7 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
                                       color:
-                                          Color.fromRGBO(114, 117, 168, 0.5)),
+                                      Color.fromRGBO(74, 85, 104, 0.3),),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -841,17 +849,17 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
-                                      color: Color.fromRGBO(251, 76, 31, 1)),
+                                      color: Color.fromRGBO(255, 77, 120, 1)),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
-                                      color: Color.fromRGBO(251, 76, 31, 1)),
+                                      color: Color.fromRGBO(255, 77, 120, 1)),
                                 ),
                                 errorStyle: TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'Open Sans',
-                                    color: Color.fromRGBO(251, 76, 31, 1),
+                                    color: Color.fromRGBO(255, 77, 120, 1),
                                     fontWeight: FontWeight.w300),
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.auto,
@@ -952,7 +960,7 @@ Future confirmDialog(context, Pet pet) async {
             Container(
               margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
               child: Text(
-                  'Are you sure you want to delete the pet? This action cannot be undone!',
+                  "Do you really want to delete this pet? This item will be deleted immediately. You can't undo this action.",
                   style: TextStyle(
                     color: Color.fromRGBO(79, 79, 79, 1),
                     fontSize: 16,
@@ -978,7 +986,7 @@ Future confirmDialog(context, Pet pet) async {
                     "Delete",
                     style: TextStyle(
                       fontSize: 18.0,
-                      color: Theme.of(context).primaryColor,
+                      color: Color.fromRGBO(255, 77, 120, 1),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1049,7 +1057,7 @@ void editDevicePet(context, Pet pet) async {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: 15),
-                  Text('Edit device ${pet.name}',
+                  Text('Edit Device ${pet.name}',
                       style: TextStyle(
                         color: Color.fromRGBO(74, 85, 104, 1),
                         fontSize: 23,
@@ -1061,7 +1069,7 @@ void editDevicePet(context, Pet pet) async {
                     margin:
                     EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
                     child: Text(
-                        'Are you sure you want to delete the pet? This action cannot be undone!',
+                        "To register a new device in the system, you need to scan the QR-Code.",
                         style: TextStyle(
                           color: Color.fromRGBO(79, 79, 79, 1),
                           fontSize: 16,
@@ -1090,9 +1098,7 @@ void editDevicePet(context, Pet pet) async {
                           "Continue",
                           style: TextStyle(
                             fontSize: 18.0,
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
+                            color: Color.fromRGBO(97, 163, 153, 1),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1143,7 +1149,7 @@ void editDevicePet(context, Pet pet) async {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: 15),
-                  Text('Edit Found',
+                  Text('Device Found',
                       style: TextStyle(
                         color: Color.fromRGBO(74, 85, 104, 1),
                         fontSize: 23,
@@ -1155,7 +1161,7 @@ void editDevicePet(context, Pet pet) async {
                     margin:
                     EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
                     child: Text(
-                        'Are you sure you want to delete the pet? This action cannot be undone!',
+                        "Good news, we found your device! Do you really want to edit this device? You can't undo this action.",
                         style: TextStyle(
                           color: Color.fromRGBO(79, 79, 79, 1),
                           fontSize: 16,

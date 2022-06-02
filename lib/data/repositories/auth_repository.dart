@@ -5,14 +5,21 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthRepository {
   final _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> signUp({required String email, required String name, required String password}) async {
+  Future<void> signUp(
+      {required String email,
+      required String name,
+      required String password}) async {
     try {
       await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password).then((value) => FirebaseFirestore.instance.collection("User").doc(value.user?.uid).set(
-        {"Email": email,
-        "Name" : name,
-        "IsDelete" : false,}
-      ));
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => FirebaseFirestore.instance
+                  .collection("User")
+                  .doc(value.user?.uid)
+                  .set({
+                "Email": email,
+                "Name": name,
+                "IsDelete": false,
+              }));
       await FirebaseAuth.instance.currentUser?.updateDisplayName(name);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -46,18 +53,22 @@ class AuthRepository {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
+          await googleUser?.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential).then((value) => FirebaseFirestore.instance.collection("User").doc(value.user?.uid).set(
-          {"Email": value.user?.email,
-            "Name" : value.user?.displayName,
-            "IsDelete" : false,}
-      ));
+      await FirebaseAuth.instance.signInWithCredential(credential).then(
+          (value) => FirebaseFirestore.instance
+                  .collection("User")
+                  .doc(value.user?.uid)
+                  .set({
+                "Email": value.user?.email,
+                "Name": value.user?.displayName,
+                "IsDelete": false,
+              }));
     } catch (e) {
       throw Exception(e.toString());
     }

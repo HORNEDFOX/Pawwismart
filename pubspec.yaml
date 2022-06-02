@@ -61,6 +61,8 @@ dependencies:
   intl: ^0.17.0
   avatar_stack: ^1.0.4
   qr_code_scanner: ^0.7.0
+  share_plus: ^4.0.5
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -119,6 +121,13 @@ flutter:
      - assets/images/check.svg
      - assets/images/li_camera.svg
      - assets/images/li_image.svg
+     - assets/images/battery100.svg
+     - assets/images/battery60.svg
+     - assets/images/battery40.svg
+     - assets/images/connection4.svg
+     - assets/images/connection3.svg
+     - assets/images/connection2.svg
+     - assets/images/connection1.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

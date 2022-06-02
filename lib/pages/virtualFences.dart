@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pawwismart/pages/mapFence.dart';
+import 'package:pawwismart/pages/toastWidget.dart';
 
 import '../bloc/fence/fence_bloc.dart';
 import '../bloc/petBloc/pet_bloc.dart';
@@ -16,6 +17,9 @@ import '../data/repositories/pet_repository.dart';
 
 class VirtualFencesPage extends StatelessWidget {
   int fenceCount = 0;
+  int countPets;
+
+  VirtualFencesPage({required this.countPets});
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +58,7 @@ class VirtualFencesPage extends StatelessWidget {
                             itemBuilder: (BuildContext ctx, index) {
                               return FenceCard(
                                 fence: state.fence.elementAt(index),
+                                countPet: countPets,
                               );
                             }),
                       ),
@@ -172,13 +177,14 @@ class FencesCard extends StatelessWidget {
 
 class FenceCard extends StatelessWidget {
   Fence fence;
+  int countPet;
   final settings = RestrictedAmountPositions(
-    maxAmountItems: 4,
+    maxAmountItems: 5,
     maxCoverage: 0.5,
     minCoverage: 0.2,
   );
 
-  FenceCard({required this.fence});
+  FenceCard({required this.fence, required this.countPet});
 
   @override
   Widget build(BuildContext context) {
@@ -228,9 +234,11 @@ class FenceCard extends StatelessWidget {
                           PopupMenuButton(
                             onSelected: (value) async{
                               switch (value) {
-                                case 1: if(fence.pets!.length == 1) return _choicePetsFence(context);
+                                case 1: if(fence.pets!.length >= 1 && fence.pets!.length != countPet) return _choicePetsFence(context);
+                                else showToast(context, "Incorrect data. You cannot add a pet.");
                                         break;
                                 case 2: if(fence.pets!.length != 1) return _deletePetsFence(context);
+                                else showToast(context, "Incorrect data. You cannot delete a pet.");
                                         break;
                                 case 3: Navigator.push(
                                     context,
@@ -248,12 +256,16 @@ class FenceCard extends StatelessWidget {
                               =>
                               [
                                 PopupMenuItem(
-                                  child: Text("Add Pets"),
+                                  child: Text("Add Pets", style: TextStyle(
+                                    color: (fence.pets!.length >= 1 && fence.pets!.length != countPet) ? Colors.black : Color.fromRGBO(148, 161, 187, 0.5) ,
+                                  ),),
                                   value: 1,
                                   onTap: (){},
                                 ),
                                 PopupMenuItem(
-                                  child: Text("Delete Pets"),
+                                  child: Text("Delete Pets", style: TextStyle(
+                                    color: fence.pets!.length != 1 ? Colors.black : Color.fromRGBO(148, 161, 187, 0.5),
+                                  ),),
                                   value: 2,
                                   onTap: (){},
                                 ),
@@ -263,7 +275,7 @@ class FenceCard extends StatelessWidget {
                                   onTap: (){},
                                 ),
                                 PopupMenuItem(
-                                  child: Text("Delete"),
+                                  child: Text("Delete", style: TextStyle(color: Color.fromRGBO(255, 77, 120, 1),),),
                                   value: 4,
                                   onTap: (){},
                                 ),
@@ -278,7 +290,7 @@ class FenceCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Pets using the fence", style: TextStyle(
+                        Text("Pets using this fence", style: TextStyle(
                           color: Color.fromRGBO(148, 161, 187, 1),
                           fontSize: 13,
                           fontFamily: 'Open Sans',
@@ -337,7 +349,7 @@ class FenceCard extends StatelessWidget {
               Container(
                   margin: const EdgeInsets.symmetric(
                       vertical: 0.0, horizontal: 20.0),
-                  child: Text("Are you sure you want to remove the ${fence.name} fence? This action cannot be undone!"),
+                  child: Text("Do you really want to delete this fence? This item will be deleted immediately. You can't undo this action.",),
                 ),
                 SizedBox(height: 15),
                 Divider(
@@ -360,9 +372,7 @@ class FenceCard extends StatelessWidget {
                         "Delete",
                         style: TextStyle(
                           fontSize: 18.0,
-                          color: Theme
-                              .of(context)
-                              .primaryColor,
+                          color: Color.fromRGBO(255, 77, 120, 1),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -456,7 +466,7 @@ class FenceCard extends StatelessWidget {
                               children: <Widget>[
                                 Container( margin: EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 20.0),
-                                  child: Text("Select the pets for which you would like to connect a safe zone " + fence.name + ":", style: TextStyle(
+                                  child: Text("Select the pets your want to put into safe zone " + fence.name + ":", style: TextStyle(
                                     color: Color.fromRGBO(79, 79, 79, 1),
                                     fontSize: 14,
                                     fontFamily: 'Open Sans',
@@ -679,7 +689,7 @@ class FenceCard extends StatelessWidget {
                               children: <Widget>[
                                 Container( margin: EdgeInsets.symmetric(
                                     vertical: 0.0, horizontal: 20.0),
-                                  child: Text("Select the pets for which you would like to connect a safe zone " + fence.name + ":", style: TextStyle(
+                                  child: Text("Select the pets your want to put into safe zone " + fence.name + ":", style: TextStyle(
                                     color: Color.fromRGBO(79, 79, 79, 1),
                                     fontSize: 14,
                                     fontFamily: 'Open Sans',
@@ -811,14 +821,14 @@ class FenceCard extends StatelessWidget {
               BlocProvider.of<FenceBloc>(context).add(
                   DeletePetsFence(fence, petsSelect));
               Navigator.of(context).pop();
-            }
+            } else showToast(context, "Incorrect data. You cannot delete a pet.");
                           },
                           child: Center(
                             child: Text(
                               "Delete",
                               style: TextStyle(
                                 fontSize: 18.0,
-                                color: Color.fromRGBO(97, 163, 153, 1),
+                                color: Color.fromRGBO(255, 77, 120, 1),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

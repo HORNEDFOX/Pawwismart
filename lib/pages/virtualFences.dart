@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pawwismart/pages/mapFence.dart';
 import 'package:pawwismart/pages/toastWidget.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 import '../bloc/fence/fence_bloc.dart';
 import '../bloc/petBloc/pet_bloc.dart';
@@ -70,11 +72,12 @@ class VirtualFencesPage extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
+            onPressed: () async {
+              Position pos = await _getGeoLocationPosition();
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MapPage(lat: 24.5, lng: 25.3, zoom: 14, lenghtFence: fenceCount, createNoPets: true,isEdit: false,),
+                  builder: (context) => MapPage(lat: pos.latitude, lng: pos.longitude, zoom: 14, lenghtFence: fenceCount, createNoPets: true,isEdit: false,),
                 ),
               );
             },
@@ -92,6 +95,36 @@ class VirtualFencesPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<Position> _getGeoLocationPosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+  // Test if location services are enabled.
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    // Location services are not enabled don't continue
+    // accessing the position and request users of the
+    // App to enable the location services.
+    await Geolocator.openLocationSettings();
+    return Future.error('Location services are disabled.');
+  }
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+
+      return Future.error('Location permissions are denied');
+    }
+  }
+  if (permission == LocationPermission.deniedForever) {
+    // Permissions are denied forever, handle appropriately.
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
+  }
+  // When we reach here, permissions are granted and we can
+  // continue accessing the position of the device.
+  return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 }
 
 class FencesCard extends StatelessWidget {

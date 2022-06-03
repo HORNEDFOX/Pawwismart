@@ -348,14 +348,13 @@ class _MyHomeState extends State<Home> {
                                                   ),
                                                 ),
                                                 child: CustomSlidableAction(
-                                                  onPressed: (context) {
+                                                  onPressed: (_) {
                                                     if (state.pets
                                                             .elementAt(index)
                                                             .IDUser !=
                                                         FirebaseAuth.instance
                                                             .currentUser!.uid) {
-                                                      _removeSharePet(
-                                                          context,
+                                                      _deleteShareDialog(context,
                                                           state.pets.elementAt(
                                                               index));
                                                     }
@@ -453,20 +452,6 @@ class _MyHomeState extends State<Home> {
                                     ),
                                   );
                                 }
-                                if (state is PetLoading) {
-                                  return SliverList(
-                                    delegate: SliverChildListDelegate(
-                                      [
-                                        Expanded(
-                                          child:
-                                        Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
                                 if (state is PetCreating) {
                                   return SliverList(
                                     delegate: SliverChildListDelegate(
@@ -481,7 +466,7 @@ class _MyHomeState extends State<Home> {
                                 return SliverList(
                                   delegate: SliverChildListDelegate(
                                     [
-                                      Container(child: Text('No data')),
+                                      Container(),
                                     ],
                                   ),
                                 );
@@ -613,7 +598,34 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
                           ),
                           widget.pet.IDUser !=
                                   FirebaseAuth.instance.currentUser!.uid
-                              ? (Container())
+                              ? (PopupMenuButton(
+                              onSelected: (value) async {
+                                switch (value) {
+                                  case 1: return _deleteShareDialog(context, widget.pet);
+                                    break;
+                                  case 2:
+                                    Share.share('Hello, friend!\nMy pet ${widget.pet.name} is now here: https://www.google.com/maps/search/?api=1&query=${widget.pet.latitude},${widget.pet.longitude}\n\nThis message was sent via the PawwiSmart app');
+                                    break;
+                                  default:
+                                    throw UnimplementedError();
+                                }
+                              },
+                              elevation: 0.5,
+                              child: SvgPicture.asset(
+                                "assets/images/filterBig.svg",
+                              ),
+                              itemBuilder: (BuildContext context) => [
+                                PopupMenuItem(
+                                  child: Text("Close Share"),
+                                  value: 1,
+                                  onTap: () {},
+                                ),
+                                PopupMenuItem(
+                                  child: Text("Share Social"),
+                                  value: 2,
+                                  onTap: () {},
+                                ),
+                              ]))
                               : (PopupMenuButton(
                                   onSelected: (value) async {
                                     switch (value) {
@@ -934,6 +946,104 @@ class _PetCardState extends State<PetCard> with InputValidationMixin {
   }
 }
 
+void _deleteShareDialog(context, Pet pet){
+  showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        return Dialog(
+          elevation: 0,
+          backgroundColor: Color(0xffffffff),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 15),
+              Text(
+                  "Stop Sharing",
+                  style: TextStyle(
+                    color: Color.fromRGBO(74, 85, 104, 1),
+                    fontSize: 23,
+                    fontFamily: 'Open Sans',
+                    fontWeight: FontWeight.w900,
+                  )
+              ),
+              SizedBox(height: 15),
+              BlocProvider(
+                create: (context) =>
+                    ShareBloc(
+                      shareRepository: ShareRepository(),
+                    ), child: Container(
+                margin: const EdgeInsets.symmetric(
+                    vertical: 0.0, horizontal: 20.0),
+                child: Text("Are you sure you want to stop sharing this pet? You can't undo this action."),
+              ),
+              ),
+              SizedBox(height: 15),
+              Divider(
+                height: 1,
+              ),
+              Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: 50,
+                child: InkWell(
+                  highlightColor: Colors.grey[200],
+                  onTap: () {
+                    _removeSharePet(context, pet);
+                    Navigator.of(context).pop();
+                  },
+                  child: Center(
+                    child: Text(
+                      "Stop Sharing",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color.fromRGBO(255, 77, 120, 1),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: 50,
+                child: InkWell(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(15.0),
+                    bottomRight: Radius.circular(15.0),
+                  ),
+                  highlightColor: Colors.grey[200],
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Center(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      });
+}
+
 Future confirmDialog(context, Pet pet) async {
   return showDialog(
     context: context,
@@ -1070,6 +1180,98 @@ void editDevicePet(context, Pet pet) async {
                     EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
                     child: Text(
                         "To register a new device in the system, you need to scan the QR-Code.",
+                        style: TextStyle(
+                          color: Color.fromRGBO(79, 79, 79, 1),
+                          fontSize: 16,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.w400,
+                        )),
+                  ),
+                  SizedBox(height: 20),
+                  Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 50,
+                    child: InkWell(
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        _scanQR(ctx, context);
+                        //Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color.fromRGBO(97, 163, 153, 1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 50,
+                    child: InkWell(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0),
+                      ),
+                      highlightColor: Colors.grey[200],
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (state is DeviceNoLoading) {
+            return Dialog(
+              elevation: 0,
+              backgroundColor: Color(0xffffffff),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 15),
+                  Text('Device Not Found',
+                      style: TextStyle(
+                        color: Color.fromRGBO(74, 85, 104, 1),
+                        fontSize: 23,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.w900,
+                      )),
+                  SizedBox(height: 15),
+                  Container(
+                    margin:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                    child: Text(
+                        "This device is not in the list of our devices. If you think an error has occurred, please contact support.",
                         style: TextStyle(
                           color: Color.fromRGBO(79, 79, 79, 1),
                           fontSize: 16,

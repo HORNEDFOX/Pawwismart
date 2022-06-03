@@ -656,7 +656,7 @@ class _PetCardState extends State<PetCard> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        //width: MediaQuery.of(context).size.width,
         child: Row(
           children: [
             Column(
@@ -706,7 +706,7 @@ class _PetCardState extends State<PetCard> {
                       Container(
                         width: 48,
                         height: 48,
-                        margin: EdgeInsets.fromLTRB(25, 5, 15, 15),
+                        margin: EdgeInsets.fromLTRB(20, 5, 15, 15),
                         decoration: BoxDecoration(
                           color: Color.fromRGBO(255, 255, 255, 0.9),
                           borderRadius: BorderRadius.circular(12),
